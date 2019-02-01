@@ -18,8 +18,7 @@ public class OI {
   Button decreaseSensitivity = new JoystickButton(rightJoy, 2);
   Button hatchGrabber = new JoystickButton(rightJoy, 1); 
 
-  //to whoever is running this on the laptop uncomment this line below, i messed up the classpath 
-  //and it won't compile locally 
-  //decreaseSensitivity.whileHeld(new DriveSensetiveCommand());
+  //links button where thumb rests on right joystick to sensetive driving mode when held
+  decreaseSensitivity.whileHeld(new DriveSensetiveCommand());
 
 }
