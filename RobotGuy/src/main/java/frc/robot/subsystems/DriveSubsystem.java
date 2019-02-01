@@ -57,6 +57,7 @@ public class DriveSubsystem extends Subsystem {
   //method of driving for more sensetive movements 
   public void sensitiveDrive(double ls, double rs) {
     
+    //first method of carrying out sensetive driving limits max speed
     double leftSpeed = ls; 
     double rightSpeed = rs; 
 
@@ -70,6 +71,16 @@ public class DriveSubsystem extends Subsystem {
       leftSpeed = -0.25; 
 
     drive.tankDrive(leftSpeed, rightSpeed);
+
+
+    //second method 
+    /*
+    *
+    *double leftSpeed = ls/3; 
+    *double rightSpeed = rs/3;
+    *
+    *drive.tankDrive(leftSpeed, rightSpeed);
+    */
   }
 
 
