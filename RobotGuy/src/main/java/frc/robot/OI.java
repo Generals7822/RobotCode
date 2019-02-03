@@ -18,7 +18,12 @@ public class OI {
   Button decreaseSensitivity = new JoystickButton(rightJoy, 2);
   Button hatchGrabber = new JoystickButton(rightJoy, 1); 
 
-  //links button where thumb rests on right joystick to sensetive driving mode when held
+
+ public OI() {
+  
+    //links button where thumb rests on right joystick to sensetive driving mode when held
+  
   decreaseSensitivity.whileHeld(new DriveSensetiveCommand());
 
+ }
 }
