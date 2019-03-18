@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.*;
 //import edu.wpi.first.wpilibj.*;
+import edu.wpi.cscore.*;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -34,6 +35,8 @@ public class Robot extends TimedRobot {
   public static HookSubsystem hook = new HookSubsystem();
   public static OI m_oi;
   public static DriveSubsystem drive;
+  public static UsbCamera camera1, camera2;
+  public static VideoSink server;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -45,12 +48,17 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_oi = new OI();
-    CameraServer.getInstance().startAutomaticCapture(0);
-    CameraServer.getInstance().startAutomaticCapture(1);
+    //CameraServer.getInstance().startAutomaticCapture(0);
+    //CameraServer.getInstance().startAutomaticCapture(1);
+    camera1=CameraServer.getInstance().startAutomaticCapture(0);
+    camera2=CameraServer.getInstance().startAutomaticCapture(1);
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
+    server= CameraServer.getInstance().getServer();
+    //server.setSource(camera1);
   }
+  
 
   /**
    * This funck tion is called every robot packet, no matter the mode. Use
