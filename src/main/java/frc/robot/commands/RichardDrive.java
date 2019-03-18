@@ -35,10 +35,10 @@ public class RichardDrive extends Command {
     SpeedControllerGroup rightmg = new SpeedControllerGroup(DriveSubsystem.rmotor1, DriveSubsystem.rmotor2);
     leftmg.setInverted(true);
     if(OI.logitech.getYButton()){//More sensitive driving
-      Robot.driving.RichardDrives(leftmg, rightmg, .2*OI.logitech.getRawAxis(1), -.2*OI.logitech.getRawAxis(4));
+      Robot.driving.RichardDrives(leftmg, rightmg, .3*OI.logitech.getRawAxis(1), -.3*OI.logitech.getRawAxis(4));
 
     }else{
-     Robot.driving.RichardDrives(leftmg, rightmg, .5*OI.logitech.getRawAxis(1), -.5*OI.logitech.getRawAxis(4));
+     Robot.driving.RichardDrives(leftmg, rightmg, .4*OI.logitech.getRawAxis(1), -.4*OI.logitech.getRawAxis(4));
     }
     
     //Robot.driving.RichardDrives(leftmg, rightmg, OI.leftJoy.getY(), OI.rightJoy.getX());

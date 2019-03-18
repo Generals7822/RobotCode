@@ -88,14 +88,14 @@ public void stop()
   }
   public void RichardDrives(SpeedControllerGroup lmg, SpeedControllerGroup rmg, double power, double direction)
   {
-    lmg.set(Math.max(-power+direction,-1)*Math.abs(Math.max(-power+direction,-1)));
-    rmg.set(Math.min(-direction-power,1)*Math.abs(Math.min(-direction-power,1)));
+    //lmg.set(Math.max(-power+direction,-1)*Math.abs(Math.max(-power+direction,-1)));
+    //rmg.set(Math.min(-direction-power,1)*Math.abs(Math.min(-direction-power,1)));
     //non-Squared:
-    //lmg.set(Math.max(-power+direction,-1));
-    //rmg.set(Math.min(-direction-power,1));
+    lmg.set(Math.max(-power+direction,-1));
+    rmg.set(Math.min(-direction-power,1));
     //Squared:
-    lmg.set(Math.max(-power+direction,-1)*Math.abs(Math.max(-power+direction,-1)));
-    rmg.set(Math.min(-direction-power,1)*Math.abs(Math.min(-direction-power,1)));
+    //lmg.set(Math.max(-power+direction,-1)*Math.abs(Math.max(-power+direction,-1)));
+    //rmg.set(Math.min(-direction-power,1)*Math.abs(Math.min(-direction-power,1)));
     /*
     //if direction is positive tank drive turn to the right
     if (direction > 0) {
