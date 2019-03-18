@@ -27,15 +27,27 @@ public class RichardDrive extends Command {
   protected void initialize() {
     System.out.println("initialized");
   }
-
+  public static boolean slowMode = false;
+  public static boolean yPressed = false;
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
     SpeedControllerGroup leftmg = new SpeedControllerGroup(DriveSubsystem.lmotor1, DriveSubsystem.lmotor2);
     SpeedControllerGroup rightmg = new SpeedControllerGroup(DriveSubsystem.rmotor1, DriveSubsystem.rmotor2);
     leftmg.setInverted(true);
-    if(OI.logitech.getYButton()){//More sensitive driving
-      Robot.driving.RichardDrives(leftmg, rightmg, .3*OI.logitech.getRawAxis(1), -.3*OI.logitech.getRawAxis(4));
+    boolean yBtn = OI.logitech.getYButton();
+    if(yBtn&&!slowMode){
+      yPressed=true;
+      slowMode=true;
+    }
+    if(yBtn&&!yPressed&&slowMode){
+      slowMode=false;
+    }
+    if(!yBtn){
+      yPressed =false;
+    }
+    if(slowMode){//More sensitive driving
+      Robot.driving.RichardDrives(leftmg, rightmg, .2*OI.logitech.getRawAxis(1), -.2*OI.logitech.getRawAxis(4));
 
     }else{
      Robot.driving.RichardDrives(leftmg, rightmg, .4*OI.logitech.getRawAxis(1), -.4*OI.logitech.getRawAxis(4));
