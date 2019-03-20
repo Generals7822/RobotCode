@@ -7,6 +7,9 @@
 
 package frc.robot;
 import edu.wpi.first.wpilibj.*;
+import io.github.pseudoresonance.pixy2api.Pixy2;
+import java.util.ArrayList;
+
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -26,6 +29,7 @@ public class RobotMap {
   public static Victor cargoMotor = new Victor(5);
   public static DigitalInput lowerSwitch = new DigitalInput(9);
   public static DigitalInput upperSwitch = new DigitalInput(8);
+  public static Pixy2 pixy;
 
 
   // If you are using multiple modules, make sure to define both the port

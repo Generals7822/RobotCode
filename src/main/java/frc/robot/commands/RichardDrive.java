@@ -36,12 +36,13 @@ public class RichardDrive extends Command {
     SpeedControllerGroup rightmg = new SpeedControllerGroup(DriveSubsystem.rmotor1, DriveSubsystem.rmotor2);
     leftmg.setInverted(true);
     boolean yBtn = OI.logitech.getYButton();
-    if(yBtn&&!slowMode){
+    if(yBtn&&!yPressed&&!slowMode){//set slow mode if yBtn is pressed and it is not in slow mode
       yPressed=true;
       slowMode=true;
     }
-    if(yBtn&&!yPressed&&slowMode){
+    if(yBtn&&!yPressed&&slowMode){//turn off slowMode if yButton is pressed, and it wasn't pressed on the prev
       slowMode=false;
+      yPressed=true;
     }
     if(!yBtn){
       yPressed =false;

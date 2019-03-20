@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.drive.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.OI;
+import java.util.ArrayList;
+import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
 /**
  * Add your docs here.
@@ -93,6 +95,23 @@ public void stop()
     //non-Squared:
     lmg.set(Math.max(-power+direction,-1));
     rmg.set(Math.min(-direction-power,1));
+
+    
+
+
+
+
+    // ArrayList<Block> blocks = RobotMap.pixy.getCCC().getBlocks();
+    // Block leftBlock;
+    // Block rightBlock;
+    // if(blocks.get(0).getX()<blocks.get(1).getX()){
+    //   leftBlock = blocks.get(0);
+    //   rightBlock = blocks.get(1);
+    // }else{
+    //   leftBlock = blocks.get(1);
+    //   rightBlock = blocks.get(0);
+    // }
+    
     //Squared:
     //lmg.set(Math.max(-power+direction,-1)*Math.abs(Math.max(-power+direction,-1)));
     //rmg.set(Math.min(-direction-power,1)*Math.abs(Math.min(-direction-power,1)));
