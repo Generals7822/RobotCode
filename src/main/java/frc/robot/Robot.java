@@ -64,6 +64,7 @@ public class Robot extends TimedRobot {
     //server.setSource(camera1);
     Pixy2 pixy = Pixy2.createInstance(new SPILink());
     pixy.init();
+    pixy.getCCC().getBlocks();
   }
   
 

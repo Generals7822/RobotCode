@@ -23,6 +23,7 @@ public class RobotMap {
   public static Victor rightMotor1 = new Victor(2);
   public static Victor rightMotor2 = new Victor(3);
   public static Victor hookMotor = new Victor(4);
+  public static Victor cargoMotor = new Victor(5);
   public static DigitalInput lowerSwitch = new DigitalInput(9);
   public static DigitalInput upperSwitch = new DigitalInput(8);
 
