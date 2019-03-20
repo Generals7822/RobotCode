@@ -21,6 +21,11 @@ import frc.robot.commands.RichardDrive;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.HookSubsystem;
+import io.github.pseudoresonance.pixy2api.Pixy2;
+import io.github.pseudoresonance.pixy2api.*;
+import io.github.pseudoresonance.pixy2api.links.*;
+
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -57,6 +62,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto mode", m_chooser);
     server= CameraServer.getInstance().getServer();
     //server.setSource(camera1);
+    Pixy2 pixy = Pixy2.createInstance(new SPILink());
+    pixy.init();
   }
   
 
