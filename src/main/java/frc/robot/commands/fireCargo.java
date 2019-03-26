@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+/*
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -12,7 +12,7 @@ import frc.robot.OI;
 import frc.robot.Robot;
 
 public class fireCargo extends Command {
-  private double m_timeout = 0.1;
+  /*private double m_timeout = 0.1;
   public fireCargo() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.cargo);
@@ -51,4 +51,4 @@ public class fireCargo extends Command {
   protected void interrupted() {
     Robot.cargo.fireCargoMotor(0);
   }
-}
+}*/

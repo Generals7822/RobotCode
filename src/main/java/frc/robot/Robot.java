@@ -18,11 +18,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.HookControl;
 import frc.robot.commands.RichardDrive;
-import frc.robot.commands.fireCargo;
+//import frc.robot.commands.fireCargo;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.HookSubsystem;
-import frc.robot.subsystems.CargoSubsystem;
+//import frc.robot.subsystems.CargoSubsystem;
 import org.opencv.core.*;
 
 /**
@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static DriveSubsystem driving = new DriveSubsystem();
   public static HookSubsystem hook = new HookSubsystem();
-  public static CargoSubsystem cargo = new CargoSubsystem();
+  //public static CargoSubsystem cargo = new CargoSubsystem();
   public static OI m_oi;
   public static DriveSubsystem drive;
   public static UsbCamera camera1, camera2;
@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
     //CameraServer.getInstance().startAutomaticCapture(0);
     //CameraServer.getInstance().startAutomaticCapture(1);
     camera1=CameraServer.getInstance().startAutomaticCapture(0);
-    camera2=CameraServer.getInstance().startAutomaticCapture(1);
+    //camera2=CameraServer.getInstance().startAutomaticCapture(1);
     CameraServer.getInstance().getVideo();
     //Core.flip(src, dst, -1);
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
@@ -110,7 +110,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     Robot.driving.setDefaultCommand(new RichardDrive());
    Robot.hook.setDefaultCommand(new HookControl());
-   Robot.cargo.setDefaultCommand(new fireCargo());
+   //Robot.cargo.setDefaultCommand(new fireCargo());
 
 
     /*
@@ -140,7 +140,7 @@ public class Robot extends TimedRobot {
 
    Robot.driving.setDefaultCommand(new RichardDrive());
    Robot.hook.setDefaultCommand(new HookControl());
-   Robot.cargo.setDefaultCommand(new fireCargo());
+   //Robot.cargo.setDefaultCommand(new fireCargo());
 }
 
   /**
