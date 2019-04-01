@@ -28,7 +28,10 @@ public class RichardDrive extends Command {
     System.out.println("initialized");
   }
   public static boolean slowMode = false;
+  public static boolean superMode = false;
   public static boolean yPressed = false;
+  public static boolean xPressed = false;
+
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
@@ -36,8 +39,16 @@ public class RichardDrive extends Command {
     SpeedControllerGroup rightmg = new SpeedControllerGroup(DriveSubsystem.rmotor1, DriveSubsystem.rmotor2);
     leftmg.setInverted(true);
     boolean yBtn = OI.logitech.getYButton();
+    if(OI.logitech.getAButton()){
+      Robot.driving.RichardDrives(leftmg, rightmg, .4*OI.logitech.getRawAxis(1), -.4*OI.logitech.getRawAxis(4));
+
+    }else{
+    boolean xBtn = OI.logitech.getXButton();
+
     if(yBtn&&!yPressed&&!slowMode){//set slow mode if yBtn is pressed and it is not in slow mode
+
       yPressed=true;
+
       slowMode=true;
     }
     if(yBtn&&!yPressed&&slowMode){//turn off slowMode if yButton is pressed, and it wasn't pressed on the prev
@@ -47,15 +58,29 @@ public class RichardDrive extends Command {
     if(!yBtn){
       yPressed =false;
     }
-    if(slowMode){//More sensitive driving
-      Robot.driving.RichardDrives(leftmg, rightmg, .2*OI.logitech.getRawAxis(1), -.2*OI.logitech.getRawAxis(4));
 
+    if(xBtn&&!xPressed&&!superMode){//set slow mode if yBtn is pressed and it is not in slow mode
+
+      xPressed=true;
+
+      superMode=true;
+    }
+    if(xBtn&&!xPressed&&superMode){//turn off slowMode if yButton is pressed, and it wasn't pressed on the prev
+      superMode=false;
+      xPressed=true;
+    }
+    if(!xBtn){
+      xPressed =false;
+    }
+    if(superMode){
+      Robot.driving.RichardDrives(leftmg, rightmg, OI.logitech.getRawAxis(1), -OI.logitech.getRawAxis(4));
+    }
+    else if(slowMode){//More sensitive driving
+      Robot.driving.RichardDrives(leftmg, rightmg, .2*OI.logitech.getRawAxis(1), -.2*OI.logitech.getRawAxis(4));
     }else{
      Robot.driving.RichardDrives(leftmg, rightmg, .4*OI.logitech.getRawAxis(1), -.4*OI.logitech.getRawAxis(4));
-    }
-    
-    //Robot.driving.RichardDrives(leftmg, rightmg, OI.leftJoy.getY(), OI.rightJoy.getX());
-  }
+
+}}}
 
   // Make this return true when this Command no longer needs to run execute()
   @Override

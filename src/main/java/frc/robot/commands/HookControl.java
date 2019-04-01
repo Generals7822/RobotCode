@@ -26,6 +26,9 @@ public class HookControl extends Command {
   public static boolean UpState = true;
   public static boolean DownState = false;
   // Called repeatedly when this Command is scheduled to run
+  boolean goingDown = false;
+  boolean goingUp = false;
+  long time = 0;
   @Override
   protected void execute() {
     
@@ -36,24 +39,27 @@ public class HookControl extends Command {
     // }else{
     //   Robot.hook.setHookMotor(0);
     // }
-
+    
     if(OI.logitech.getRawButton(5)&&DownState){//Raising
+      goingUp = true;
       Robot.hook.setHookMotor(.11*3);
-      while(!RobotMap.upperSwitch.get()&&!OI.logitech.getBButton()){
-        try{Thread.sleep(2);}catch(Exception e){}
-      }
+      time = System.currentTimeMillis();
+    }else if(OI.logitech.getRawButton(6)&&UpState){//Lowering
+      goingDown=true;
+      Robot.hook.setHookMotor(-.1392*2);
+      time = System.currentTimeMillis();
+    }
+    boolean timeOut = System.currentTimeMillis()-time>2000;
+    if(goingUp&&(RobotMap.upperSwitch.get()||OI.logitech.getBButton()||timeOut)){//Raising
       Robot.hook.setHookMotor(0);
       DownState = false;
       UpState = true;
-    }else if(OI.logitech.getRawButton(6)&&UpState){//Lowering
-
-      Robot.hook.setHookMotor(-.1392*2);
-      while(!RobotMap.lowerSwitch.get()&&!OI.logitech.getBButton()){
-        try{Thread.sleep(2);}catch(Exception e){}
-      }
+      goingUp = false;
+    }else if(goingDown&&(RobotMap.lowerSwitch.get()||OI.logitech.getBButton()||timeOut)){//Lowering
       Robot.hook.setHookMotor(0);
       DownState = true;
       UpState = false;
+      goingDown=false;
     }
 
   }
