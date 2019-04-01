@@ -12,6 +12,7 @@ import javax.lang.model.util.ElementScanner6;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.OI;
@@ -99,18 +100,31 @@ public void stop()
     
 
 
+    if(!SmartDashboard.getString("DB/String 2","null").equals("Running")){
+      SmartDashboard.putString("DB/String 2", "Running");
+
+    }
+
+    ArrayList<Block> blocks = RobotMap.pixy.getCCC().getBlocks();
+    if(!SmartDashboard.getString("DB/String 1","null").equals(""+blocks.size())){
+      SmartDashboard.putString("DB/String 1", ""+blocks.size());
+
+    }
+    if(blocks.size()>=2){
+    Block leftBlock;
+    Block rightBlock;
+    if(blocks.get(0).getX()<blocks.get(1).getX()){
+      leftBlock = blocks.get(0);
+      rightBlock = blocks.get(1);
+    }else{
+      leftBlock = blocks.get(1);
+      rightBlock = blocks.get(0);
+    }
+    double distance = 2.0*316/(2*leftBlock.getX()*Math.tan(30*Math.PI/180));//should compute distance in inches(VERY ROUGHLY)
 
 
-    // ArrayList<Block> blocks = RobotMap.pixy.getCCC().getBlocks();
-    // Block leftBlock;
-    // Block rightBlock;
-    // if(blocks.get(0).getX()<blocks.get(1).getX()){
-    //   leftBlock = blocks.get(0);
-    //   rightBlock = blocks.get(1);
-    // }else{
-    //   leftBlock = blocks.get(1);
-    //   rightBlock = blocks.get(0);
-    // }
+    
+  }
     
     //Squared:
     //lmg.set(Math.max(-power+direction,-1)*Math.abs(Math.max(-power+direction,-1)));

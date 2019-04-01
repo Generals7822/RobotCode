@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
     //server.setSource(camera1);
     RobotMap.pixy = Pixy2.createInstance(new SPILink());
     RobotMap.pixy.init();
-    
+    SmartDashboard.putString("DB/String 0", "String");
   }
   
 
@@ -82,6 +82,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     // CameraServer.getInstance().startAutomaticCapture(0);
     // CameraServer.getInstance().startAutomaticCapture(1);
+
   }
 
   /**
@@ -95,6 +96,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+
     Scheduler.getInstance().run();
   }
 
