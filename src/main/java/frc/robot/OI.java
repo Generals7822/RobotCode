@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.*;
 public class OI {
   // public static Joystick leftJoy = new Joystick(0);
   // public static Joystick rightJoy = new Joystick(1);
-  public static XboxController logitech = new XboxController(0);
+  public static XboxController logitech = new XboxController(0);//Logitech Controller on port 0
   
   // Button button5l = new JoystickButton(leftJoy, 5);
   // Button button1l = new JoystickButton(leftJoy, 1);

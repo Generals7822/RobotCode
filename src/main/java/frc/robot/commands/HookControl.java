@@ -40,22 +40,22 @@ public class HookControl extends Command {
     //   Robot.hook.setHookMotor(0);
     // }
     
-    if(OI.logitech.getRawButton(5)&&DownState){//Raising
+    if(OI.logitech.getRawButton(5)&&DownState){//Start Raising
       goingUp = true;
       Robot.hook.setHookMotor(.11*3);
-      time = System.currentTimeMillis();
-    }else if(OI.logitech.getRawButton(6)&&UpState){//Lowering
+      time = System.currentTimeMillis();//Gets current time
+    }else if(OI.logitech.getRawButton(6)&&UpState){//Start Lowering
       goingDown=true;
       Robot.hook.setHookMotor(-.1392*2);
       time = System.currentTimeMillis();
     }
-    boolean timeOut = System.currentTimeMillis()-time>2000;
-    if(goingUp&&(RobotMap.upperSwitch.get()||OI.logitech.getBButton()||timeOut)){//Raising
+    boolean timeOut = System.currentTimeMillis()-time>2000;//Stop if it takes longer than 2 sec
+    if(goingUp&&(RobotMap.upperSwitch.get()||OI.logitech.getBButton()||timeOut)){//Stop Raising
       Robot.hook.setHookMotor(0);
       DownState = false;
       UpState = true;
       goingUp = false;
-    }else if(goingDown&&(RobotMap.lowerSwitch.get()||OI.logitech.getBButton()||timeOut)){//Lowering
+    }else if(goingDown&&(RobotMap.lowerSwitch.get()||OI.logitech.getBButton()||timeOut)){//Stop Lowering
       Robot.hook.setHookMotor(0);
       DownState = true;
       UpState = false;

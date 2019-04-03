@@ -31,6 +31,6 @@ public class HookSubsystem extends Subsystem {
   }
 
   public void setHookMotor(double speed){
-    hMotor.set(speed);
+    hMotor.set(speed);//Takes speed, sets motor
   }
 }

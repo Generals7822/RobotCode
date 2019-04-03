@@ -15,7 +15,7 @@ import frc.robot.RobotMap;
 import frc.robot.Main;
 import frc.robot.OI;
 
-public class RichardDrive extends Command {
+public class RichardDrive extends Command {//Main Driving Command
   public RichardDrive() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -35,20 +35,18 @@ public class RichardDrive extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    SpeedControllerGroup leftmg = new SpeedControllerGroup(DriveSubsystem.lmotor1, DriveSubsystem.lmotor2);
+    SpeedControllerGroup leftmg = new SpeedControllerGroup(DriveSubsystem.lmotor1, DriveSubsystem.lmotor2);//Two Groups of Motor Intiaited
     SpeedControllerGroup rightmg = new SpeedControllerGroup(DriveSubsystem.rmotor1, DriveSubsystem.rmotor2);
-    leftmg.setInverted(true);
+    leftmg.setInverted(true);//Flip left motor to get it going the right direction
+
     boolean yBtn = OI.logitech.getYButton();
-    if(OI.logitech.getAButton()){
-      Robot.driving.RichardDrives(leftmg, rightmg, .4*OI.logitech.getRawAxis(1), -.4*OI.logitech.getRawAxis(4));
-
-    }else{
-    boolean xBtn = OI.logitech.getXButton();
-
+    boolean xBtn = OI.logitech.getXButton();//Get states of X and Y button and save them
+    
+    //TO TEST: slow-mode for demos
+    Robot.driving.RichardDrives(leftmg, rightmg, .1*OI.logitech.getRawAxis(1), -.1*OI.logitech.getRawAxis(4));
+    /*
     if(yBtn&&!yPressed&&!slowMode){//set slow mode if yBtn is pressed and it is not in slow mode
-
       yPressed=true;
-
       slowMode=true;
     }
     if(yBtn&&!yPressed&&slowMode){//turn off slowMode if yButton is pressed, and it wasn't pressed on the prev
@@ -59,28 +57,26 @@ public class RichardDrive extends Command {
       yPressed =false;
     }
 
-    if(xBtn&&!xPressed&&!superMode){//set slow mode if yBtn is pressed and it is not in slow mode
-
+    if(xBtn&&!xPressed&&!superMode){//set super mode if xBtn is pressed and it is not in super mode
       xPressed=true;
-
       superMode=true;
     }
-    if(xBtn&&!xPressed&&superMode){//turn off slowMode if yButton is pressed, and it wasn't pressed on the prev
+    if(xBtn&&!xPressed&&superMode){//turn off superMode if xButton is pressed, and it wasn't pressed on the prev
       superMode=false;
       xPressed=true;
     }
     if(!xBtn){
       xPressed =false;
     }
-    if(superMode){
+    if(superMode){//Super Mode Command
       Robot.driving.RichardDrives(leftmg, rightmg, OI.logitech.getRawAxis(1), -OI.logitech.getRawAxis(4));
     }
     else if(slowMode){//More sensitive driving
       Robot.driving.RichardDrives(leftmg, rightmg, .2*OI.logitech.getRawAxis(1), -.2*OI.logitech.getRawAxis(4));
-    }else{
+    }else{//Normal Driving
      Robot.driving.RichardDrives(leftmg, rightmg, .4*OI.logitech.getRawAxis(1), -.4*OI.logitech.getRawAxis(4));
-
-}}}
+    }*/
+}
 
   // Make this return true when this Command no longer needs to run execute()
   @Override

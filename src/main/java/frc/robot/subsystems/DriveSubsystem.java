@@ -90,16 +90,18 @@ public void stop()
     //This is a comment
   }
   public void RichardDrives(SpeedControllerGroup lmg, SpeedControllerGroup rmg, double power, double direction)
-  {
-    //lmg.set(Math.max(-power+direction,-1)*Math.abs(Math.max(-power+direction,-1)));
+  {//Main Drive command
+    //Squared:
+    //lmg.set(Math.max(-power+direction,-1)*Math.abs(Math.max(-power+direction,-1))); 
     //rmg.set(Math.min(-direction-power,1)*Math.abs(Math.min(-direction-power,1)));
     //non-Squared:
     lmg.set(Math.max(-power+direction,-1));
-    rmg.set(Math.min(-direction-power,1));
+    rmg.set(Math.min(-direction-power,1));//Sets the controls with arcade mode calculation
 
     
 
-
+    //Test Pixy Code
+    /*
     if(!SmartDashboard.getString("DB/String 2","null").equals("Running")){
       SmartDashboard.putString("DB/String 2", "Running");
 
@@ -121,7 +123,7 @@ public void stop()
       rightBlock = blocks.get(0);
     }
     double distance = 2.0*316/(2*leftBlock.getX()*Math.tan(30*Math.PI/180));//should compute distance in inches(VERY ROUGHLY)
-
+`*/
 
     
   }
@@ -172,4 +174,4 @@ public void stop()
     }*/
   
   }
-}
+

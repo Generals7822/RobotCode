@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
@@ -18,11 +19,13 @@ public class TestPID extends PIDSubsystem {
    */
   public TestPID() {
     // Intert a subsystem name and PID values here
-    super("SubsystemName", 1, 2, 3);
+    super("AutomatedDriving", 1, 0, 0);
     // Use these to get going:
     // setSetpoint() - Sets where the PID controller should move the system
     // to
+    setSetpoint(5);
     // enable() - Enables the PID controller.
+    enable();
   }
 
   @Override
@@ -41,6 +44,7 @@ public class TestPID extends PIDSubsystem {
 
   @Override
   protected void usePIDOutput(double output) {
+    SmartDashboard.putNumber("DB/String 0", output);
     // Use output to drive your system, like a motor
     // e.g. yourMotor.set(output);
   }
