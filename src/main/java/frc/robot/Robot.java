@@ -84,7 +84,6 @@ public class Robot extends TimedRobot {
     // CameraServer.getInstance().startAutomaticCapture(0);
     // CameraServer.getInstance().startAutomaticCapture(1);
     
-   AutonomousCode.autonomous();
   }
 
   /**
@@ -134,6 +133,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+    AutonomousCode.autonomous();
+
   }
 
   @Override
@@ -153,6 +154,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+    AutonomousCode.autonomous();
+
   }
 
   /**
