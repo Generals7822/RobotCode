@@ -47,6 +47,7 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
 		double pathTurnAngle = 180/Math.PI*(hatchAngleRad+Math.acos(-(-2*shipDistance
 				+inchesFromDrop*Math.cos(2*hatchAngleRad)+inchesFromDrop)
 				/(2*Math.cos(hatchAngleRad)*pathDistance)));//Formula for calculating angle to travel in
+
 				FuncsToDo.add(AutonomousCode::rotateTo);
 				if(driveToRight) {
 					//If we are going right, go right
@@ -120,7 +121,8 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
 	}
 
     public static double getHatchAngle(){
-        return 0;
+		return 0;
+		//Complete w/ PixyCam
     }
 
     private static double toTerminalAngle(double angle) {
@@ -142,11 +144,29 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
 	
 	private static void driveForward(double inches) {//drives forwards the set amount
 		System.out.println("Driving Forward "+inches+" inches.");
+		//Complete
+
 	}
-	
+	public static boolean UpState = true;
+	public static boolean DownState = false;
+	// Called repeatedly when this Command is scheduled to run
+	static boolean goingDown = false;
+	static boolean goingUp = false;
+	static long time = 0;
+
 	private static void releaseHatch(Double d) {//releases hatch
-		
-    }
+		goingUp = true;
+		Robot.hook.setHookMotor(.11*3);
+		time = System.currentTimeMillis();//Gets current time
+		  
+		boolean timeOut = System.currentTimeMillis()-time>2000;//Stop if it takes longer than 2 sec
+		if(goingUp&&(RobotMap.upperSwitch.get()||OI.logitech.getBButton()||timeOut)){//Stop Raising
+			Robot.hook.setHookMotor(0);
+			DownState = false;
+			UpState = true;
+			goingUp = false;
+		}
+	}
     
 
     
