@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.AutonomousCode;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.HookControl;
 import frc.robot.commands.RichardDrive;
@@ -82,7 +83,8 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     // CameraServer.getInstance().startAutomaticCapture(0);
     // CameraServer.getInstance().startAutomaticCapture(1);
-
+    
+   // AutonomousCode.autonmous();
   }
 
   /**
@@ -140,7 +142,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-
+  
    Robot.driving.setDefaultCommand(new RichardDrive());
    Robot.hook.setDefaultCommand(new HookControl());
 }

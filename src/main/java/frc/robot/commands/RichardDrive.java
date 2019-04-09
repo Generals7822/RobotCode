@@ -35,6 +35,7 @@ public class RichardDrive extends Command {//Main Driving Command
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    if(!AutonomousCode.autoMode){
     SpeedControllerGroup leftmg = new SpeedControllerGroup(DriveSubsystem.lmotor1, DriveSubsystem.lmotor2);//Two Groups of Motor Intiaited
     SpeedControllerGroup rightmg = new SpeedControllerGroup(DriveSubsystem.rmotor1, DriveSubsystem.rmotor2);
     leftmg.setInverted(true);//Flip left motor to get it going the right direction
@@ -76,6 +77,7 @@ public class RichardDrive extends Command {//Main Driving Command
     }else{//Normal Driving
      Robot.driving.RichardDrives(leftmg, rightmg, .4*OI.logitech.getRawAxis(1), -.4*OI.logitech.getRawAxis(4));
     }*/
+  }
 }
 
   // Make this return true when this Command no longer needs to run execute()
