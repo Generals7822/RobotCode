@@ -11,21 +11,29 @@ import edu.wpi.first.wpilibj.*;
 import com.analog.adis16448.frc.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
+import frc.robot.subsystems.*;
+
 
 /**
  * Add your docs here.
  */
 
 public class AutonomousCode { //All ToDo Functions must take in a double and be void, all changes should be made through field variables
-
+//This is a first attempt at Auto Code, all of this is untested and will almost certainly not work
+//Requires: Gyro, Encoder, Pixy, and Ultrasonic
     public static boolean aPressed = false;
     public static boolean autoMode = false;
     public static ADIS16448_IMU imu = new ADIS16448_IMU();
     public static Ultrasonic ult = new Ultrasonic(1,1);//Set Actual Input and Output values
-	
+	static SpeedControllerGroup leftmg;
+	static SpeedControllerGroup rightmg;
+
 	public static void initAuto(){
 		FuncsToDo.clear();
 		inputs.clear();
+		leftmg = new SpeedControllerGroup(DriveSubsystem.lmotor1, DriveSubsystem.lmotor2);//Two Groups of Motor Intiaited
+    	rightmg = new SpeedControllerGroup(DriveSubsystem.rmotor1, DriveSubsystem.rmotor2);
+    	leftmg.setInverted(true);//Flip left motor to get it going the right direction
         double robotAngle = toTerminalAngle(imu.getYaw());
 		if(robotAngle>180) {
 			robotAngle = robotAngle-360;
@@ -62,14 +70,14 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
 				inputs.add(0.0);
 
 				FuncsToDo.add(AutonomousCode::driveForward);
-				inputs.add(2.0);
+				inputs.add(inchesFromDrop);
 
 				FuncsToDo.add(AutonomousCode::HatchDown);
 				inputs.add(0.0);
 
 				FuncsToDo.add(AutonomousCode::HatchUp);
 				inputs.add(0.0);
-
+				toDoInProgress=true;
 				
 
 	}
@@ -134,16 +142,24 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
 		return (angle%360+360)%360;
 	}
 
-	private static void rotateTo(double targetDeg) {
+	private static void rotateTo(double targetDeg) {//First approach to setting direction, should defenitely be improved after testing
 		double currentDeg = toTerminalAngle(targetDeg - imu.getYaw());
+		if(currentDeg<2||currentDeg>358){
+			leftmg.set(0);
+			rightmg.set(0);
+			currentTaskDone = true;
+			return;
+		}
 		if (currentDeg > 180) {
 			double degRot = 360-currentDeg;
 			System.out.println("Rotate "+degRot+" in CCW dir.");
-			// rotate by degRot in a counterclockwise direction
+			leftmg.set(Math.max(-degRot/100,-1));
+			rightmg.set(Math.min(degRot/100,1));
 		} else {
 			double degRot = currentDeg;
 			System.out.println("Rotate "+degRot+" in CW dir.");
-			// rotate by degRot in a clockwise direction
+			leftmg.set(Math.min(degRot/100,1));
+			rightmg.set(Math.max(-degRot/100,-1));
 		}
 	}
 	

@@ -59,7 +59,7 @@ public class HookControl extends Command {
       Robot.hook.setHookMotor(0);
       DownState = true;
       UpState = false;
-      goingDown=false;
+      goingDown = false;
     }
 
   }
