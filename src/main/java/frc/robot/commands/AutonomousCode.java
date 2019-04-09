@@ -64,8 +64,13 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
 				FuncsToDo.add(AutonomousCode::driveForward);
 				inputs.add(2.0);
 
-				FuncsToDo.add(AutonomousCode::releaseHatch);
+				FuncsToDo.add(AutonomousCode::HatchDown);
 				inputs.add(0.0);
+
+				FuncsToDo.add(AutonomousCode::HatchUp);
+				inputs.add(0.0);
+
+				
 
 	}
 	
@@ -147,24 +152,21 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
 		//Complete
 
 	}
-	public static boolean UpState = true;
-	public static boolean DownState = false;
-	// Called repeatedly when this Command is scheduled to run
-	static boolean goingDown = false;
-	static boolean goingUp = false;
-	static long time = 0;
+	
 
-	private static void releaseHatch(Double d) {//releases hatch
-		goingUp = true;
+	private static void HatchUp(Double d) {//releases hatch
 		Robot.hook.setHookMotor(.11*3);
-		time = System.currentTimeMillis();//Gets current time
-		  
-		boolean timeOut = System.currentTimeMillis()-time>2000;//Stop if it takes longer than 2 sec
-		if(goingUp&&(RobotMap.upperSwitch.get()||OI.logitech.getBButton()||timeOut)){//Stop Raising
+		if(RobotMap.upperSwitch.get()||OI.logitech.getBButton()){//Stop Raising
 			Robot.hook.setHookMotor(0);
-			DownState = false;
-			UpState = true;
-			goingUp = false;
+			currentTaskDone=true;
+		}
+	}
+
+	private static void HatchDown(Double d) {//releases hatch
+		Robot.hook.setHookMotor(-.1392*2);
+		if(RobotMap.lowerSwitch.get()||OI.logitech.getBButton()){//Stop Raising
+			Robot.hook.setHookMotor(0);
+			currentTaskDone=true;
 		}
 	}
     
