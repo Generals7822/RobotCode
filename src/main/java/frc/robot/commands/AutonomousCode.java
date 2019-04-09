@@ -24,6 +24,8 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
     public static Ultrasonic ult = new Ultrasonic(1,1);//Set Actual Input and Output values
 	
 	public static void initAuto(){
+		FuncsToDo.clear();
+		inputs.clear();
         double robotAngle = toTerminalAngle(imu.getYaw());
 		if(robotAngle>180) {
 			robotAngle = robotAngle-360;
@@ -39,13 +41,31 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
 		double inchesFromDrop = 2; //how far in front the robot should be of the cargo ship when lining up
 		
 		
-		intialPathDistance = Math.sqrt(shipDistance*shipDistance
+		double pathDistance = Math.sqrt(shipDistance*shipDistance
 				*Math.tan(hatchAngleRad)*Math.tan(hatchAngleRad)+(shipDistance-inchesFromDrop)
 				*(shipDistance-inchesFromDrop)); //Formula for calculating the distance to the spot in front of the cargo ship
 		double pathTurnAngle = 180/Math.PI*(hatchAngleRad+Math.acos(-(-2*shipDistance
 				+inchesFromDrop*Math.cos(2*hatchAngleRad)+inchesFromDrop)
-				/(2*Math.cos(hatchAngleRad)*intialPathDistance)));//Formula for calculating angle to travel in
-		
+				/(2*Math.cos(hatchAngleRad)*pathDistance)));//Formula for calculating angle to travel in
+				FuncsToDo.add(AutonomousCode::rotateTo);
+				if(driveToRight) {
+					//If we are going right, go right
+					inputs.add(pathTurnAngle);
+				}else{
+					inputs.add(360-pathTurnAngle);//If we are going left, go left
+				}
+				FuncsToDo.add(AutonomousCode::driveForward);
+				inputs.add(pathDistance);
+
+				FuncsToDo.add(AutonomousCode::rotateTo);//rotate towards the ship
+				inputs.add(0.0);
+
+				FuncsToDo.add(AutonomousCode::driveForward);
+				inputs.add(2.0);
+
+				FuncsToDo.add(AutonomousCode::releaseHatch);
+				inputs.add(0.0);
+
 	}
 	
 	static int step = 0;
@@ -58,7 +78,7 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
         if(aBtn&&!aPressed&&!autoMode){//set auto mode if aBtn is pressed and it is not in auto mode
             aPressed=true;
 			autoMode=true;
-			step=0;
+			step=0;//step counter for future additions to autonomous
         }
         if(aBtn&&!aPressed&&autoMode){//turn off autoMode if aButton is pressed, and it wasn't pressed on the prev
             autoMode=false;
@@ -73,6 +93,8 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
         if(autoMode){
             if(toDoInProgress){
 				ToDo(FuncsToDo, inputs);
+			}else{
+				initAuto();
 			}
         }
 	}
@@ -122,11 +144,10 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
 		System.out.println("Driving Forward "+inches+" inches.");
 	}
 	
-	private static void releaseHatch() {//releases hatch
+	private static void releaseHatch(Double d) {//releases hatch
 		
     }
     
-    public static double intialPathDistance;
 
     
 
