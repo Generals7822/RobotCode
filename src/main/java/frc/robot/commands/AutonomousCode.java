@@ -18,7 +18,7 @@ public class AutonomousCode {
     public static boolean autoMode = false;
 
 
-    public static void autonomus(){
+    public static void autonomous(){
          
         boolean aBtn = OI.logitech.getAButton();
 
