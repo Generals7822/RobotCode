@@ -43,7 +43,7 @@ public class RichardDrive extends Command {//Main Driving Command
     boolean yBtn = OI.logitech.getYButton();
     boolean xBtn = OI.logitech.getXButton();//Get states of X and Y button and save them
     
-    //TO TEST: slow-mode for demos
+    //slow-mode for demos
     Robot.driving.RichardDrives(leftmg, rightmg, .25*OI.logitech.getRawAxis(1), -.25*OI.logitech.getRawAxis(4));
     /*
     if(yBtn&&!yPressed&&!slowMode){//set slow mode if yBtn is pressed and it is not in slow mode

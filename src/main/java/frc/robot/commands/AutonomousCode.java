@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
+
 import frc.robot.*;
 import edu.wpi.first.wpilibj.*;
 import com.analog.adis16448.frc.*;
@@ -13,105 +14,118 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 import frc.robot.subsystems.*;
 
-
 /**
  * Add your docs here.
  */
 
-public class AutonomousCode { //All ToDo Functions must take in a double and be void, all changes should be made through field variables
-//This is a first attempt at Auto Code, all of this is untested and will almost certainly not work
-//Requires: Gyro, Encoder, Pixy, and Ultrasonic
-    public static boolean aPressed = false;
-    public static boolean autoMode = false;
-    public static ADIS16448_IMU imu = new ADIS16448_IMU();
-    public static Ultrasonic ult = new Ultrasonic(1,1);//Set Actual Input and Output values
+public class AutonomousCode { // All ToDo Functions must take in a double and be void, all changes should be
+								// made through field variables
+	// This is a first attempt at Auto Code, all of this is untested and will almost
+	// certainly not work
+	// Requires: Gyro, Encoder, Pixy, and Ultrasonic
+	public static boolean aPressed = false;
+	public static boolean autoMode = false;
+	public static ADIS16448_IMU imu = new ADIS16448_IMU();
+	public static Ultrasonic ult = new Ultrasonic(1, 1);// Set Actual Input and Output values
 	static SpeedControllerGroup leftmg;
 	static SpeedControllerGroup rightmg;
+	static Encoder rEncoder;
+	static Encoder lEncoder;
 
-	public static void initAuto(){
+	public static void initAuto() {
 		FuncsToDo.clear();
 		inputs.clear();
-		leftmg = new SpeedControllerGroup(DriveSubsystem.lmotor1, DriveSubsystem.lmotor2);//Two Groups of Motor Intiaited
-    	rightmg = new SpeedControllerGroup(DriveSubsystem.rmotor1, DriveSubsystem.rmotor2);
-    	leftmg.setInverted(true);//Flip left motor to get it going the right direction
-        double robotAngle = toTerminalAngle(imu.getYaw());
-		if(robotAngle>180) {
-			robotAngle = robotAngle-360;
+		lEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k2X);
+		rEncoder = new Encoder(3, 4, false, Encoder.EncodingType.k2X);// SET the actual used ports
+		lEncoder.setDistancePerPulse(1);// Change to actual value
+		rEncoder.setDistancePerPulse(1);// Change to actual value
+
+		leftmg = new SpeedControllerGroup(DriveSubsystem.lmotor1, DriveSubsystem.lmotor2);// Two Groups of Motor
+																							// Intiaited
+		rightmg = new SpeedControllerGroup(DriveSubsystem.rmotor1, DriveSubsystem.rmotor2);
+		leftmg.setInverted(true);// Flip left motor to get it going the right direction
+		double robotAngle = toTerminalAngle(imu.getYaw());
+		if (robotAngle > 180) {
+			robotAngle = robotAngle - 360;
 		}
-		
-		double hatchAngle = robotAngle+getHatchAngle();//Comes from PixyCam
-		
-		
-		boolean driveToRight = hatchAngle>0;//Sees if we are driving to the left or right
-		hatchAngle = Math.abs(hatchAngle);//changes everything to positive
-		double shipDistance = ult.getRangeInches()*Math.cos(robotAngle*Math.PI/180); //distance of Robot to Cargo Ship
-		double hatchAngleRad = Math.PI*hatchAngle/180;//Convert to Radians
-		double inchesFromDrop = 2; //how far in front the robot should be of the cargo ship when lining up
-		
-		
-		double pathDistance = Math.sqrt(shipDistance*shipDistance
-				*Math.tan(hatchAngleRad)*Math.tan(hatchAngleRad)+(shipDistance-inchesFromDrop)
-				*(shipDistance-inchesFromDrop)); //Formula for calculating the distance to the spot in front of the cargo ship
-		double pathTurnAngle = 180/Math.PI*(hatchAngleRad+Math.acos(-(-2*shipDistance
-				+inchesFromDrop*Math.cos(2*hatchAngleRad)+inchesFromDrop)
-				/(2*Math.cos(hatchAngleRad)*pathDistance)));//Formula for calculating angle to travel in
 
-				FuncsToDo.add(AutonomousCode::rotateTo);
-				if(driveToRight) {
-					//If we are going right, go right
-					inputs.add(pathTurnAngle);
-				}else{
-					inputs.add(360-pathTurnAngle);//If we are going left, go left
-				}
-				FuncsToDo.add(AutonomousCode::driveForward);
-				inputs.add(pathDistance);
+		double hatchAngle = robotAngle + getHatchAngle();// Comes from PixyCam
 
-				FuncsToDo.add(AutonomousCode::rotateTo);//rotate towards the ship
-				inputs.add(0.0);
+		boolean driveToRight = hatchAngle > 0;// Sees if we are driving to the left or right
+		hatchAngle = Math.abs(hatchAngle);// changes everything to positive
+		double shipDistance = ult.getRangeInches() * Math.cos(robotAngle * Math.PI / 180); // distance of Robot to Cargo
+																							// Ship
+		double hatchAngleRad = Math.PI * hatchAngle / 180;// Convert to Radians
+		double inchesFromDrop = 2; // how far in front the robot should be of the cargo ship when lining up
 
-				FuncsToDo.add(AutonomousCode::driveForward);
-				inputs.add(inchesFromDrop);
+		double pathDistance = Math.sqrt(shipDistance * shipDistance * Math.tan(hatchAngleRad) * Math.tan(hatchAngleRad)
+				+ (shipDistance - inchesFromDrop) * (shipDistance - inchesFromDrop)); // Formula for calculating the
+																						// distance to the spot in front
+																						// of the cargo ship
+		double pathTurnAngle = 180 / Math.PI
+				* (hatchAngleRad
+						+ Math.acos(-(-2 * shipDistance + inchesFromDrop * Math.cos(2 * hatchAngleRad) + inchesFromDrop)
+								/ (2 * Math.cos(hatchAngleRad) * pathDistance)));// Formula for calculating angle to
+																					// travel in
 
-				FuncsToDo.add(AutonomousCode::HatchDown);
-				inputs.add(0.0);
+		FuncsToDo.add(AutonomousCode::rotateTo);
+		if (driveToRight) {
+			// If we are going right, go right
+			inputs.add(pathTurnAngle);
+		} else {
+			inputs.add(360 - pathTurnAngle);// If we are going left, go left
+		}
+		FuncsToDo.add(AutonomousCode::driveForward);
+		inputs.add(pathDistance);
 
-				FuncsToDo.add(AutonomousCode::HatchUp);
-				inputs.add(0.0);
-				toDoInProgress=true;
-				
+		FuncsToDo.add(AutonomousCode::rotateTo);// rotate towards the ship
+		inputs.add(0.0);
+
+		FuncsToDo.add(AutonomousCode::driveForward);
+		inputs.add(inchesFromDrop);
+
+		FuncsToDo.add(AutonomousCode::HatchDown);
+		inputs.add(0.0);
+
+		FuncsToDo.add(AutonomousCode::HatchUp);
+		inputs.add(0.0);
+		toDoInProgress = true;
 
 	}
-	
+
 	static int step = 0;
 	static boolean toDoInProgress = false;
 
-    public static void autonomous(){
-         
-        boolean aBtn = OI.logitech.getAButton();
+	public static void autonomous() {
 
-        if(aBtn&&!aPressed&&!autoMode){//set auto mode if aBtn is pressed and it is not in auto mode
-            aPressed=true;
-			autoMode=true;
-			step=0;//step counter for future additions to autonomous
-        }
-        if(aBtn&&!aPressed&&autoMode){//turn off autoMode if aButton is pressed, and it wasn't pressed on the prev
-            autoMode=false;
-			aPressed=true;
+		boolean aBtn = OI.logitech.getAButton();
+
+		if (aBtn && !aPressed && !autoMode) {// set auto mode if aBtn is pressed and it is not in auto mode
+			aPressed = true;
+			autoMode = true;
+			step = 0;// step counter for future additions to autonomous
+		}
+		if (aBtn && !aPressed && autoMode) {// turn off autoMode if aButton is pressed, and it wasn't pressed on the
+											// prev
+			autoMode = false;
+			aPressed = true;
 			toDoInProgress = false;
 
-        }
-        if(!aBtn){
-            aPressed = false;
-        }
+		}
+		if (!aBtn) {
+			aPressed = false;
+		}
 
-        if(autoMode){
-            if(toDoInProgress){
+		if (autoMode) {
+			if (toDoInProgress) {
 				ToDo(FuncsToDo, inputs);
-			}else{
+			} else {
 				initAuto();
+				step++;
 			}
-        }
+		}
 	}
+
 	static ArrayList<Consumer<Double>> FuncsToDo = new ArrayList<>();
 	static ArrayList<Double> inputs = new ArrayList<>();
 
@@ -120,74 +134,84 @@ public class AutonomousCode { //All ToDo Functions must take in a double and be 
 
 	private static boolean ToDo(ArrayList<Consumer<Double>> funcs, ArrayList<Double> inputs) {
 		funcs.get(currentTaskNum).accept(inputs.get(currentTaskNum));
-		while(currentTaskDone) {
+		while (currentTaskDone) {
 			currentTaskNum++;
-			currentTaskDone=false;
+			currentTaskDone = false;
 			System.out.println(currentTaskNum);
-			if(currentTaskNum==funcs.size()) {
+			if (currentTaskNum == funcs.size()) {
 				return true;
 			}
 			funcs.get(currentTaskNum).accept(inputs.get(currentTaskNum));
 		}
-		
+
 		return false;
 	}
 
-    public static double getHatchAngle(){
+	public static double getHatchAngle() {
 		return 0;
-		//Complete w/ PixyCam
-    }
-
-    private static double toTerminalAngle(double angle) {
-		return (angle%360+360)%360;
+		// Complete w/ PixyCam
 	}
 
-	private static void rotateTo(double targetDeg) {//First approach to setting direction, should defenitely be improved after testing
+	private static double toTerminalAngle(double angle) {
+		return (angle % 360 + 360) % 360;
+	}
+
+	private static void rotateTo(double targetDeg) {// First approach to setting direction, should defenitely be
+													// improved after testing
 		double currentDeg = toTerminalAngle(targetDeg - imu.getYaw());
-		if(currentDeg<2||currentDeg>358){
+		if (currentDeg < 2 || currentDeg > 358) {
 			leftmg.set(0);
 			rightmg.set(0);
 			currentTaskDone = true;
 			return;
 		}
 		if (currentDeg > 180) {
-			double degRot = 360-currentDeg;
-			System.out.println("Rotate "+degRot+" in CCW dir.");
-			leftmg.set(Math.max(-degRot/100,-1));
-			rightmg.set(Math.min(degRot/100,1));
+			double degRot = 360 - currentDeg;
+			System.out.println("Rotate " + degRot + " in CCW dir.");
+			leftmg.set(Math.max(-degRot / 100, -1));
+			rightmg.set(Math.min(degRot / 100, 1));
 		} else {
 			double degRot = currentDeg;
-			System.out.println("Rotate "+degRot+" in CW dir.");
-			leftmg.set(Math.min(degRot/100,1));
-			rightmg.set(Math.max(-degRot/100,-1));
+			System.out.println("Rotate " + degRot + " in CW dir.");
+			leftmg.set(Math.min(degRot / 100, 1));
+			rightmg.set(Math.max(-degRot / 100, -1));
 		}
 	}
-	
-	private static void driveForward(double inches) {//drives forwards the set amount
-		System.out.println("Driving Forward "+inches+" inches.");
-		//Complete
+
+	static boolean initDrive = true;
+
+	private static void driveForward(double inches) {// drives forwards the set amount
+		//System.out.println("Driving Forward " + inches + " inches.");
+		if (initDrive) {//Reset the encoders at the intial starting point
+			lEncoder.reset();
+			rEncoder.reset();
+		}
+		initDrive = false;//finish intial set-up
+		double approxDistance = (lEncoder.getDistance() + rEncoder.getDistance()) / 2;//estimate distance w/ the average of the encoders
+		if (inches - approxDistance < .5 && inches - approxDistance > -.5) {
+			currentTaskDone = true;//Within half an inch, declare done and set initDrive for next drive command
+			initDrive=true;
+			return;
+		}
+		leftmg.set(Math.min(1, (inches - approxDistance)/12));//Set the motors proportional to distance 
+		rightmg.set(Math.min(1, (inches - approxDistance)/12));
 
 	}
-	
 
-	private static void HatchUp(Double d) {//releases hatch
-		Robot.hook.setHookMotor(.11*3);
-		if(RobotMap.upperSwitch.get()||OI.logitech.getBButton()){//Stop Raising
+	private static void HatchUp(Double d) {// retracts arm
+		Robot.hook.setHookMotor(.11 * 3);
+		if (RobotMap.upperSwitch.get() || OI.logitech.getBButton()) {// Stop Raising
 			Robot.hook.setHookMotor(0);
-			currentTaskDone=true;
+			currentTaskDone = true;
 		}
 	}
 
-	private static void HatchDown(Double d) {//releases hatch
-		Robot.hook.setHookMotor(-.1392*2);
-		if(RobotMap.lowerSwitch.get()||OI.logitech.getBButton()){//Stop Raising
+	private static void HatchDown(Double d) {// releases hatch
+		Robot.hook.setHookMotor(-.1392 * 2);
+		if (RobotMap.lowerSwitch.get() || OI.logitech.getBButton()) {// Stop Raising
 			Robot.hook.setHookMotor(0);
-			currentTaskDone=true;
+			currentTaskDone = true;
 		}
 	}
-    
 
-    
-
-    
 }
