@@ -23,39 +23,44 @@ public class HookControl extends Command {
   protected void initialize() {
 
   }
+
   public static boolean UpState = true;
   public static boolean DownState = false;
   // Called repeatedly when this Command is scheduled to run
   boolean goingDown = false;
   boolean goingUp = false;
   long time = 0;
+
   @Override
   protected void execute() {
-    
+
     // if(OI.logitech.getRawButton(5)){
-    //   Robot.hook.setHookMotor(.108);
+    // Robot.hook.setHookMotor(.108);
     // }else if(OI.logitech.getRawButton(6)){
-    //   Robot.hook.setHookMotor(-.1392);
+    // Robot.hook.setHookMotor(-.1392);
     // }else{
-    //   Robot.hook.setHookMotor(0);
+    // Robot.hook.setHookMotor(0);
     // }
-    
-    if(OI.logitech.getRawButton(5)&&DownState){//Start Raising
-      goingUp = true;
-      Robot.hook.setHookMotor(.11*3);
-      time = System.currentTimeMillis();//Gets current time
-    }else if(OI.logitech.getRawButton(6)&&UpState){//Start Lowering
-      goingDown=true;
-      Robot.hook.setHookMotor(-.1392*2);
-      time = System.currentTimeMillis();
+    if (!AutonomousCode.autoMode) {//Only enable hook control if we are not in auto mode
+
+      if (OI.logitech.getRawButton(5) && DownState) {// Start Raising
+        goingUp = true;
+        Robot.hook.setHookMotor(.11 * 3);
+        time = System.currentTimeMillis();// Gets current time
+      } else if (OI.logitech.getRawButton(6) && UpState) {// Start Lowering
+        goingDown = true;
+        Robot.hook.setHookMotor(-.1392 * 2);
+        time = System.currentTimeMillis();
+      }
     }
-    boolean timeOut = System.currentTimeMillis()-time>2000;//Stop if it takes longer than 2 sec
-    if(goingUp&&(RobotMap.upperSwitch.get()||OI.logitech.getBButton()||timeOut)){//Stop Raising
+    //make sure hook can finish if you enter auto mode mid hook release
+    boolean timeOut = System.currentTimeMillis() - time > 2000;// Stop if it takes longer than 2 sec
+    if (goingUp && (RobotMap.upperSwitch.get() || OI.logitech.getBButton() || timeOut)) {// Stop Raising
       Robot.hook.setHookMotor(0);
       DownState = false;
       UpState = true;
       goingUp = false;
-    }else if(goingDown&&(RobotMap.lowerSwitch.get()||OI.logitech.getBButton()||timeOut)){//Stop Lowering
+    } else if (goingDown && (RobotMap.lowerSwitch.get() || OI.logitech.getBButton() || timeOut)) {// Stop Lowering
       Robot.hook.setHookMotor(0);
       DownState = true;
       UpState = false;
