@@ -13,6 +13,8 @@ import com.analog.adis16448.frc.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import frc.robot.subsystems.*;
+import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
@@ -56,7 +58,7 @@ public class AutonomousCode { // All ToDo Functions must take in a double and be
 		double shipDistance = ult.getRangeInches() * Math.cos(robotAngle * Math.PI / 180); // distance of Robot to Cargo
 																							// Ship
 		double hatchAngleRad = Math.PI * hatchAngle / 180;// Convert to Radians
-		double inchesFromDrop = 2; // how far in front the robot should be of the cargo ship when lining up
+		double inchesFromDrop = 6; // how far in front the robot should be of the cargo ship when lining up
 
 		double pathDistance = Math.sqrt(shipDistance * shipDistance * Math.tan(hatchAngleRad) * Math.tan(hatchAngleRad)
 				+ (shipDistance - inchesFromDrop) * (shipDistance - inchesFromDrop)); // Formula for calculating the
@@ -148,8 +150,35 @@ public class AutonomousCode { // All ToDo Functions must take in a double and be
 	}
 
 	public static double getHatchAngle() {
-		return 0;
+
 		// Complete w/ PixyCam
+		// Test Pixy Code
+
+		if (!SmartDashboard.getString("DB/String 2", "null").equals("Running")) {
+			SmartDashboard.putString("DB/String 2", "Running");
+
+		}
+
+		ArrayList<Block> blocks = RobotMap.pixy.getCCC().getBlocks();
+		if (!SmartDashboard.getString("DB/String 1", "null").equals("" + blocks.size())) {
+			SmartDashboard.putString("DB/String 1", "" + blocks.size());
+
+		}
+		if (blocks.size() >= 2) {//Intial version, stands to be improved
+			Block leftBlock;
+			Block rightBlock;
+			if (blocks.get(0).getX() < blocks.get(1).getX()) {
+				leftBlock = blocks.get(0);
+				rightBlock = blocks.get(1);
+			} else {
+				leftBlock = blocks.get(1);
+				rightBlock = blocks.get(0);
+			}
+			return (30/158*(leftBlock.getX()+leftBlock.getX())/2-158);//Uses Pixy2 FOV of 30 deg and resolution of 316 to calculate approx Angle
+			
+		}
+		return Double.MAX_VALUE;
+
 	}
 
 	private static double toTerminalAngle(double angle) {
@@ -181,20 +210,21 @@ public class AutonomousCode { // All ToDo Functions must take in a double and be
 	static boolean initDrive = true;
 
 	private static void driveForward(double inches) {// drives forwards the set amount
-		//System.out.println("Driving Forward " + inches + " inches.");
-		if (initDrive) {//Reset the encoders at the intial starting point
+		// System.out.println("Driving Forward " + inches + " inches.");
+		if (initDrive) {// Reset the encoders at the intial starting point
 			lEncoder.reset();
 			rEncoder.reset();
 		}
-		initDrive = false;//finish intial set-up
-		double approxDistance = (lEncoder.getDistance() + rEncoder.getDistance()) / 2;//estimate distance w/ the average of the encoders
+		initDrive = false;// finish intial set-up
+		double approxDistance = (lEncoder.getDistance() + rEncoder.getDistance()) / 2;// estimate distance w/ the
+																						// average of the encoders
 		if (inches - approxDistance < .5 && inches - approxDistance > -.5) {
-			currentTaskDone = true;//Within half an inch, declare done and set initDrive for next drive command
-			initDrive=true;
+			currentTaskDone = true;// Within half an inch, declare done and set initDrive for next drive command
+			initDrive = true;
 			return;
 		}
-		leftmg.set(Math.min(1, (inches - approxDistance)/12));//Set the motors proportional to distance 
-		rightmg.set(Math.min(1, (inches - approxDistance)/12));
+		leftmg.set(Math.min(1, (inches - approxDistance) / 12));// Set the motors proportional to distance
+		rightmg.set(Math.min(1, (inches - approxDistance) / 12));
 
 	}
 
@@ -208,7 +238,7 @@ public class AutonomousCode { // All ToDo Functions must take in a double and be
 
 	private static void HatchDown(Double d) {// releases hatch
 		Robot.hook.setHookMotor(-.1392 * 2);
-		if (RobotMap.lowerSwitch.get() || OI.logitech.getBButton()) {// Stop Raising
+		if (RobotMap.lowerSwitch.get() || OI.logitech.getBButton()) {// Stop Lowering
 			Robot.hook.setHookMotor(0);
 			currentTaskDone = true;
 		}

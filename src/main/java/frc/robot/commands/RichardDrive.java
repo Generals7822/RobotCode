@@ -44,8 +44,8 @@ public class RichardDrive extends Command {//Main Driving Command
     boolean xBtn = OI.logitech.getXButton();//Get states of X and Y button and save them
     
     //slow-mode for demos
-    Robot.driving.RichardDrives(leftmg, rightmg, .25*OI.logitech.getRawAxis(1), -.25*OI.logitech.getRawAxis(4));
-    /*
+    //Robot.driving.RichardDrives(leftmg, rightmg, .25*OI.logitech.getRawAxis(1), -.25*OI.logitech.getRawAxis(4));
+    
     if(yBtn&&!yPressed&&!slowMode){//set slow mode if yBtn is pressed and it is not in slow mode
       yPressed=true;
       slowMode=true;
@@ -76,7 +76,7 @@ public class RichardDrive extends Command {//Main Driving Command
       Robot.driving.RichardDrives(leftmg, rightmg, .2*OI.logitech.getRawAxis(1), -.2*OI.logitech.getRawAxis(4));
     }else{//Normal Driving
      Robot.driving.RichardDrives(leftmg, rightmg, .4*OI.logitech.getRawAxis(1), -.4*OI.logitech.getRawAxis(4));
-    }*/
+    }
   }
 }
 
