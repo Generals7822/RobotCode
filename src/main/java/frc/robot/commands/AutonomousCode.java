@@ -17,14 +17,17 @@ import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Add your docs here.
+ * All ToDo Functions must take in a double and return void, all changes should be
+ * made through field variables
+ * This is a first attempt at Auto Code, all of this is untested and needs testing
+ * /bug fixes in order to work
+ * Requires: Gyro, Encoder, Pixy, and Ultrasonic
+ * Program computes distance and angle based on a Center of Mass(a point that
+ * distance and angle can be computed around)
+ * 
  */
 
-public class AutonomousCode { // All ToDo Functions must take in a double and be void, all changes should be
-								// made through field variables
-	// This is a first attempt at Auto Code, all of this is untested and will almost
-	// certainly not work
-	// Requires: Gyro, Encoder, Pixy, and Ultrasonic
+public class AutonomousCode { 
 	public static boolean aPressed = false;
 	public static boolean autoMode = false;
 	public static ADIS16448_IMU imu = new ADIS16448_IMU();
@@ -55,10 +58,15 @@ public class AutonomousCode { // All ToDo Functions must take in a double and be
 
 		boolean driveToRight = hatchAngle > 0;// Sees if we are driving to the left or right
 		hatchAngle = Math.abs(hatchAngle);// changes everything to positive
-		double shipDistance = ult.getRangeInches() * Math.cos(robotAngle * Math.PI / 180); // distance of Robot to Cargo
+		double ultDistance = ult.getRangeInches();//The distance from the ultrasonic to the cargo ship
+		double CoMtoUltDistance = 0;//Constant to set: distance between Robot Center of Mass and Ultrasonic
+		double angleFromCoMtoUlt = 0;//Constant to set: angle from Center of Mass to Ultrasonic, between 0 and 90
+		double distanceToCargoForward = Math.sqrt(ultDistance * ultDistance + CoMtoUltDistance * CoMtoUltDistance
+				- 2 * CoMtoUltDistance * ultDistance * Math.cos((angleFromCoMtoUlt + 90) * Math.PI / 180));
+		double shipDistance = distanceToCargoForward * Math.cos(robotAngle * Math.PI / 180); // distance of Robot to Cargo
 																							// Ship
 		double hatchAngleRad = Math.PI * hatchAngle / 180;// Convert to Radians
-		double inchesFromDrop = 6; // how far in front the robot should be of the cargo ship when lining up
+		double inchesFromDrop = 5; // Constant to Set: how far in front the robot should be of the cargo ship when lining up
 
 		double pathDistance = Math.sqrt(shipDistance * shipDistance * Math.tan(hatchAngleRad) * Math.tan(hatchAngleRad)
 				+ (shipDistance - inchesFromDrop) * (shipDistance - inchesFromDrop)); // Formula for calculating the
@@ -164,7 +172,7 @@ public class AutonomousCode { // All ToDo Functions must take in a double and be
 			SmartDashboard.putString("DB/String 1", "" + blocks.size());
 
 		}
-		if (blocks.size() >= 2) {//Intial version, stands to be improved
+		if (blocks.size() >= 2) {// Intial version, stands to be improved
 			Block leftBlock;
 			Block rightBlock;
 			if (blocks.get(0).getX() < blocks.get(1).getX()) {
@@ -174,21 +182,23 @@ public class AutonomousCode { // All ToDo Functions must take in a double and be
 				leftBlock = blocks.get(1);
 				rightBlock = blocks.get(0);
 			}
-			return (30/158*(leftBlock.getX()+leftBlock.getX())/2-158);//Uses Pixy2 FOV of 30 deg and resolution of 316 to calculate approx Angle
-			
+			return (30 / 158 * (leftBlock.getX() + leftBlock.getX()) / 2 - 158);// Uses Pixy2 FOV of 30 deg and
+																				// resolution of 316 to calculate approx
+																				// Angle
+
 		}
 		return Double.MAX_VALUE;
 
 	}
 
-	private static double toTerminalAngle(double angle) {
+	private static double toTerminalAngle(double angle) {// Converts to Terminal Angle
 		return (angle % 360 + 360) % 360;
 	}
 
 	private static void rotateTo(double targetDeg) {// First approach to setting direction, should defenitely be
 													// improved after testing
 		double currentDeg = toTerminalAngle(targetDeg - imu.getYaw());
-		if (currentDeg < 2 || currentDeg > 358) {
+		if (currentDeg < 2 || currentDeg > 358) {// If it is within 2 degrees, stop
 			leftmg.set(0);
 			rightmg.set(0);
 			currentTaskDone = true;
@@ -196,12 +206,12 @@ public class AutonomousCode { // All ToDo Functions must take in a double and be
 		}
 		if (currentDeg > 180) {
 			double degRot = 360 - currentDeg;
-			System.out.println("Rotate " + degRot + " in CCW dir.");
+			// System.out.println("Rotate " + degRot + " in CCW dir.");
 			leftmg.set(Math.max(-degRot / 100, -1));
 			rightmg.set(Math.min(degRot / 100, 1));
 		} else {
 			double degRot = currentDeg;
-			System.out.println("Rotate " + degRot + " in CW dir.");
+			// System.out.println("Rotate " + degRot + " in CW dir.");
 			leftmg.set(Math.min(degRot / 100, 1));
 			rightmg.set(Math.max(-degRot / 100, -1));
 		}
