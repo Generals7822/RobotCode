@@ -52,7 +52,7 @@ public class AutonomousCode {
 
 		}
 		if (!aBtn) {
-			aPressed = false;
+			aPressed = false; //a pressed on previous frame
 		}
 
 		if (autoMode) {
@@ -239,7 +239,6 @@ public class AutonomousCode {
 		SmartDashboard.putNumber("Yaw", imu.getYaw());
 		SmartDashboard.putNumber("XAngle", imu.getAngleX());
 		SmartDashboard.putNumber("YAngle", imu.getAngleY());
-
 		SmartDashboard.putNumber("ZAngle", imu.getAngleZ());
 
 		if (currentDeg < 2 || currentDeg > 310) {// If it is within 2 degrees, stop
