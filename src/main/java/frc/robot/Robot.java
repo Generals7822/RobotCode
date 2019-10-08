@@ -8,6 +8,7 @@
 package frc.robot;//Info: auto format is Shift-Alt-F
 
 import edu.wpi.first.cameraserver.*;
+import com.analog.adis16448.frc.*;
 //import edu.wpi.first.wpilibj.*;
 import edu.wpi.cscore.*;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -41,7 +42,8 @@ public class Robot extends TimedRobot {
   public static HookSubsystem hook = new HookSubsystem();
   public static OI m_oi;
   public static DriveSubsystem drive;
-  public static UsbCamera camera1, camera2;
+  public static final ADIS16448_IMU imu = new ADIS16448_IMU();
+ //public static UsbCamera camera1, camera2;
   public static VideoSink server;
 
   Command m_autonomousCommand;
@@ -56,15 +58,15 @@ public class Robot extends TimedRobot {
     m_oi = new OI();
     // CameraServer.getInstance().startAutomaticCapture(0);
     // CameraServer.getInstance().startAutomaticCapture(1);
-    camera1 = CameraServer.getInstance().startAutomaticCapture(0);
-    camera2 = CameraServer.getInstance().startAutomaticCapture(1);
+    // camera1 = CameraServer.getInstance().startAutomaticCapture(0);
+    // camera2 = CameraServer.getInstance().startAutomaticCapture(1);
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
-    server = CameraServer.getInstance().getServer();
+    //server = CameraServer.getInstance().getServer();
     // server.setSource(camera1);
-    RobotMap.pixy = Pixy2.createInstance(new SPILink());
-    RobotMap.pixy.init();
+    // RobotMap.pixy = Pixy2.createInstance(new SPILink());
+    // RobotMap.pixy.init();
     SmartDashboard.putString("DB/String 0", "String");
   }
 
@@ -152,8 +154,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    AutonomousCode.autoMode = true;
     Scheduler.getInstance().run();
-    AutonomousCode.autonomous();
+    AutonomousCode.testAutonomous();
+    //AutonomousCode.autonomous();
 
   }
 
