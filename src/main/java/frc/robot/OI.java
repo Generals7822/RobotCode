@@ -8,26 +8,32 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.Drive_command;
+import frc.robot.subsystems.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-  // public static Joystick leftJoy = new Joystick(0);
+  //public static Joystick leftJoy = new Joystick(1);
   // public static Joystick rightJoy = new Joystick(1);
   public static XboxController logitech = new XboxController(0);//Logitech Controller on port 0
-  
+  public static Joystick joystick = new Joystick(1);
   // Button button5l = new JoystickButton(leftJoy, 5);
   // Button button1l = new JoystickButton(leftJoy, 1);
   // Button button1r = new JoystickButton(rightJoy, 1);
   // Button button5r = new JoystickButton(rightJoy, 5);
   // Button button12r = new JoystickButton(rightJoy, 12);
   // Button button11r = new JoystickButton(rightJoy, 11);
-
+  JoystickButton button5l= new JoystickButton(joystick, 1);
+  
 
   public OI() {
-    // button5l.whenPressed(new RichardDrive());
+    //button5l.whenPressed(new Drive_command());
     //button1l.whenPressed(new RichardDrive());
     //button1r.whenPressed(new Stop());
     //button5r.whenPressed(new MoreSensitiveDrive());
