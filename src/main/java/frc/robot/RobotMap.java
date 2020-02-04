@@ -7,8 +7,9 @@
 
 package frc.robot;
 import edu.wpi.first.wpilibj.*;
-import io.github.pseudoresonance.pixy2api.Pixy2;
-import java.util.ArrayList;
+import frc.robot.commands.*;
+//import io.github.pseudoresonance.pixy2api.Pixy2;
+//import java.util.ArrayList;
 
 
 /**
@@ -29,7 +30,7 @@ public class RobotMap {
   public static Victor cargoMotor = new Victor(5);
   public static DigitalInput lowerSwitch = new DigitalInput(9);//limit switches
   public static DigitalInput upperSwitch = new DigitalInput(8);
-  public static Pixy2 pixy;//Pixy Cam
+  public static George_Pixy pixy = new George_Pixy();//Pixy Cam
 
 
   // If you are using multiple modules, make sure to define both the port
@@ -37,3 +38,4 @@ public class RobotMap {
   // public static int rangefinderPort = 1;
   // public static int rangefinderModule = 1;
 }
+

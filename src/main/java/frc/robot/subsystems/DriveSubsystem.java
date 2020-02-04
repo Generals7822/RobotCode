@@ -1,5 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -8,16 +6,16 @@
 package frc.robot.subsystems;
 
 
-import javax.lang.model.util.ElementScanner6;
+//import javax.lang.model.util.ElementScanner6;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.OI;
-import java.util.ArrayList;
-import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
+//import java.util.ArrayList;
+//import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
 /**
  * Add your docs here.
@@ -25,7 +23,7 @@ import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 public class DriveSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-public static Victor lmotor1= RobotMap.leftMotor1;
+public static Victor lmotor1= RobotMap.leftMotor1; //reset
 public static Victor lmotor2= RobotMap.leftMotor2;
 public static Victor rmotor1 = RobotMap.rightMotor1;
 public static Victor rmotor2 = RobotMap.rightMotor2;
@@ -83,11 +81,27 @@ public void stop()
   rmotor1.set(0);
 }
 
+public void itwasMicah(SpeedControllerGroup lmg, SpeedControllerGroup rmg)
+{
+  lmg.set(.5);
+  rmg.set(.5);
+}
+
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
     //This is a comment
+  }
+  public void LeftMotorStrength(SpeedController lmg, SpeedController rmg)
+  {
+    rmg.set(0);
+    lmg.set(0.8);
+  }
+  public void StandardDrive(SpeedControllerGroup lmg, SpeedControllerGroup rmg)
+  {
+    lmg.set(0.5);
+    rmg.set(0.5);
   }
   public void RichardDrives(SpeedControllerGroup lmg, SpeedControllerGroup rmg, double power, double direction)
   {//Main Drive command

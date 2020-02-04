@@ -7,15 +7,21 @@
 
 package frc.robot.commands;
 
+import java.lang.Object;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.*;
+import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.*;
 //import com.analog.adis16448.frc.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import frc.robot.subsystems.*;
-//import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.OI;
+import frc.robot.Robot;
+import frc.robot.subsystems.DriveSubsystem;
 /**
  * All ToDo Functions must take in a double and return void, all changes should
  * be made through field variables This is a first attempt at Auto Code, all of
@@ -25,7 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * 
  */
 
-public class AutonomousCode {
+public class AutonomousCode_tinkering {
 	public static boolean aPressed = false;
 	public static boolean autoMode = false;
 	//public static ADIS16448_IMU imu = new ADIS16448_IMU();
@@ -34,32 +40,9 @@ public class AutonomousCode {
     static SpeedControllerGroup rightmg = new SpeedControllerGroup(DriveSubsystem.rmotor1, DriveSubsystem.rmotor2);
 	//static Encoder rEncoder;
 	//static Encoder lEncoder;
-
-	public static void testAutonomous(){
-		leftmg.setInverted(true);
-		boolean aBtn = OI.logitech.getAButton();
-
-		if (aBtn && !aPressed && !autoMode) {// set auto mode if aBtn is pressed and it is not in auto mode
-			aPressed = true;
-			autoMode = true;
-			step = 0;// step counter for future additions to autonomous
-		}
-		if (aBtn && !aPressed && autoMode) {// turn off autoMode if aButton is pressed, and it wasn't pressed on the
-											// prev
-			autoMode = false;
-			aPressed = true;
-			toDoInProgress = false;
-
-		}
-		if (!aBtn) {
-			aPressed = false; //a pressed on previous frame
-		}
-
-		//if (autoMode) {
-		//if(true){
-		//	rotateTo(0);
-		//}
-	//}
+	public AutonomousCode_tinkering()
+	{
+		autoMode=true;
 	}
 /*
 	public static void initAuto() {
@@ -90,7 +73,7 @@ public class AutonomousCode {
 		// The Robot currently calulates Distances and Movements relative to the Pixy2,
 		// ideally this should be changed to the hook
 		// One of doing this easily might be two Ultrasonics, or more advanced vision
-		//processing
+		// processing
 
 		boolean driveToRight = hatchAngle > 0;// Sees if we are driving to the left or right
 		hatchAngle = Math.abs(hatchAngle);// changes everything to positive
@@ -115,32 +98,34 @@ public class AutonomousCode {
 								/ (2 * Math.cos(hatchAngleRad) * pathDistance)));// Formula for calculating angle to
 																					// travel in
 
-		FuncsToDo.add(AutonomousCode::rotateTo);
-		if (driveToRight) {
-			// If we are going right, go right
-			inputs.add(pathTurnAngle);
-		} else {
-			inputs.add(360 - pathTurnAngle);// If we are going left, go left
-		}
+		// FuncsToDo.add(AutonomousCode::rotateTo);
+		// if (driveToRight) {
+		// 	// If we are going right, go right
+		// 	inputs.add(pathTurnAngle);
+		// } else {
+		// 	inputs.add(360 - pathTurnAngle);
+		// }
+		// 	// If we are going left, go left
+		// }
 		
-		FuncsToDo.add(AutonomousCode::driveForward);
-		inputs.add(pathDistance);
+	// 	FuncsToDo.add(AutonomousCode::driveForward);
+	// 	inputs.add(pathDistance);
 
-		FuncsToDo.add(AutonomousCode::rotateTo);// rotate towards the ship
-		inputs.add(0.0);
+	// 	FuncsToDo.add(AutonomousCode::rotateTo);// rotate towards the ship
+	// 	inputs.add(0.0);
 
-		FuncsToDo.add(AutonomousCode::driveForward);
-		inputs.add(inchesFromDrop);
+	// 	FuncsToDo.add(AutonomousCode::driveForward);
+	// 	inputs.add(inchesFromDrop);
 
-		FuncsToDo.add(AutonomousCode::HatchDown);
-		inputs.add(0.0);
+	// 	FuncsToDo.add(AutonomousCode::HatchDown);
+	// 	inputs.add(0.0);
 
-		FuncsToDo.add(AutonomousCode::HatchUp);
-		inputs.add(0.0);
-		toDoInProgress = true;
+	// 	FuncsToDo.add(AutonomousCode::HatchUp);
+	// 	inputs.add(0.0);
+	// 	toDoInProgress = true;
 
-	}
-*/
+	// }
+
 	static int step = 0;
 	static boolean toDoInProgress = false;
 
@@ -165,12 +150,13 @@ public class AutonomousCode {
 		}
 
 		if (autoMode) {
-			if (toDoInProgress) {
-				ToDo(FuncsToDo, inputs);
-			} else {
-				//initAuto();
-				step++;
-			}
+			testpixy();
+			// if (toDoInProgress) {
+			// 	ToDo(FuncsToDo, inputs);
+			// } else {
+			// 	//initAuto();
+			// 	step++;
+			// }
 		}
 	}
 
@@ -193,10 +179,154 @@ public class AutonomousCode {
 		}
 
 		return false;
-	}
-}
+	}*/
+
+	// public static void Ryan() {
+	// 	PixyCamBlock[] blocks = George_Pixy.getBlocks();
+
+	// 	if (blocks != null && blocks.length != 0) {
+	// 		RobotMap.leftMotor1.set(-.25);
+	// 		RobotMap.leftMotor2.set(-.25);
+	// 		RobotMap.rightMotor1.set(.25);
+	// 		RobotMap.rightMotor2.set(.25);
+	// 	}
+	// 	else{
+	// 		RobotMap.leftMotor1.set(0);
+	// 		RobotMap.leftMotor2.set(0);
+	// 		RobotMap.rightMotor1.set(0);
+	// 		RobotMap.rightMotor2.set(0);
+	// 	}
+	// }
 	
-	//public static double getHatchAngle() {}
+
+	public static void testpixy() {
+		PixyCamBlock[] blocks = George_Pixy.getBlocks();
+		
+		double addRight;
+		double addLeft;
+		if (blocks != null && blocks.length != 0) {
+			double currentDeg = toTerminalAngle(160 - blocks[0].xCenter);
+			if (currentDeg < 5 || currentDeg > 355) {// If it is within 5 degrees, stop
+				addRight = 0;
+				addLeft = 0;
+				// currentTaskDone = true;
+				// return;
+			}
+			if (currentDeg > 180) {
+				double degRot = 360 - currentDeg;
+				// System.out.println("Rotate " + degRot + " in CCW dir.");
+				addLeft = -Math.max(-degRot / 500, -0.5);
+				addRight = Math.min(degRot / 500, 0.5);
+			} else {
+				double degRot = currentDeg;
+				// System.out.println("Rotate " + degRot + " in CW dir.");
+				addLeft = -Math.min(degRot / 500, 0.5);
+				addRight = Math.max(-degRot / 500, -0.5);
+			}
+
+			if (blocks[0].height <= 45) {
+				RobotMap.leftMotor1.set(-.25 + addLeft);
+				RobotMap.leftMotor2.set(-.25 + addLeft);
+				RobotMap.rightMotor1.set(.25 + addRight);
+				RobotMap.rightMotor2.set(.25 + addRight);
+			} else if (blocks[0].height >= 55) {
+				RobotMap.leftMotor1.set(.25 + addLeft);
+				RobotMap.leftMotor2.set(.25 + addLeft);
+				RobotMap.rightMotor1.set(-.25 + addRight);
+				RobotMap.rightMotor2.set(-.25 + addRight);
+			} else {
+				RobotMap.leftMotor1.set(0);
+				RobotMap.leftMotor2.set(0);
+				RobotMap.rightMotor1.set(0);
+				RobotMap.rightMotor2.set(0);
+			}
+
+		} else {
+			RobotMap.leftMotor1.set(0);
+			RobotMap.leftMotor2.set(0);
+			RobotMap.rightMotor1.set(0);
+			RobotMap.rightMotor2.set(0);
+		}
+	}
+	
+
+	private static void rotateBy(double targetDeg) 
+	{
+//First approach to setting direction, should defenitely be
+												// improved after testing
+												
+		double currentDeg = toTerminalAngle(targetDeg);
+		// SmarthDasboard.putNumber("Yaw", imu.getYaw());
+		// SmartDashboard.putNumber("XAngle", imu.getAngleX());
+		// SmartDashboard.putNumber("YAngle", imu.getAngleY());
+		// SmartDashboard.putNumber("ZAngle", imu.getAngleZ());
+
+		if (currentDeg < 5 || currentDeg > 355) {// If it is within 5 degrees, stop
+			leftmg.set(0);
+			rightmg.set(0);
+			// currentTaskDone = true;
+			// return;
+		}
+		if (currentDeg > 180) {
+			double degRot = 360 - currentDeg;
+			// System.out.println("Rotate " + degRot + " in CCW dir.");
+			leftmg.set(-Math.max(-degRot / 500, -0.5));
+			rightmg.set(Math.min(degRot / 500, 0.5));
+		} else {
+			double degRot = currentDeg;
+			// System.out.println("Rotate " + degRot + " in CW dir.");
+			leftmg.set(-Math.min(degRot / 500, 0.5));
+			rightmg.set(Math.max(-degRot / 500, -0.5));
+		}
+		
+	}
+	static boolean sAPressed = false;
+	static boolean sSlowmode = false;
+
+	// private static void sarahs_tinker() {
+	// 	boolean abtn = OI.logitech.getAButton();
+	// 	if (abtn && !sAPressed) {
+	// 		sAPressed = true;
+	// 		sSlowmode = true;
+	// 	}
+	// 	if (abtn && sAPressed){
+	// 		sAPressed = false;
+	// 		sSlowmode =false; 
+	// 	}
+	// }
+	
+	private static void rotateDrive(double targetDeg) 
+	{
+//First approach to setting direction, should defenitely be
+												// improved after testing
+												
+		double currentDeg = toTerminalAngle(targetDeg);
+		// SmarthDasboard.putNumber("Yaw", imu.getYaw());
+		// SmartDashboard.putNumber("XAngle", imu.getAngleX());
+		// SmartDashboard.putNumber("YAngle", imu.getAngleY());
+		// SmartDashboard.putNumber("ZAngle", imu.getAngleZ());
+
+		if (currentDeg < 5 || currentDeg > 355) {// If it is within 5 degrees, stop
+			leftmg.set(0);
+			rightmg.set(0);
+			// currentTaskDone = true;
+			// return;
+		}
+		if (currentDeg > 180) {
+			double degRot = 360 - currentDeg;
+			// System.out.println("Rotate " + degRot + " in CCW dir.");
+			leftmg.set(-Math.max(-degRot / 500, -0.5));
+			rightmg.set(Math.min(degRot / 500, 0.5));
+		} else {
+			double degRot = currentDeg;
+			// System.out.println("Rotate " + degRot + " in CW dir.");
+			leftmg.set(-Math.min(degRot / 500, 0.5));
+			rightmg.set(Math.max(-degRot / 500, -0.5));
+		}
+		
+	}
+	
+//public static double getHatchAngle() {}
 
 		// Complete w/ PixyCam
 		// Test Pixy Code
@@ -206,32 +336,32 @@ public class AutonomousCode {
 
 		// }
 
-		//ArrayList<Block> blocks = RobotMap.pixy.getCCC().getBlocks();
-		// if (!SmartDashboard.getString("DB/String 1", "null").equals("" +
-		// blocks.size())) {
-		// SmartDashboard.putString("DB/String 1", "" + blocks.size());
+	// 	ArrayList<Block> blocks = RobotMap.pixy.getCCC().getBlocks();
+	// 	if (!SmartDashboard.getString("DB/String 1", "null").equals("" +
+	// 	blocks.size())) {
+	// 	SmartDashboard.putString("DB/String 1", "" + blocks.size());
 
-		// }
-		//if (blocks.size() >= 2) {// Intial version, stands to be improved
-			// Block leftBlock;
-			// Block rightBlock;
-			// if (blocks.get(0).getX() < blocks.get(1).getX()) {
-			// leftBlock = blocks.get(0);
-			// rightBlock = blocks.get(1);
-			// } else {
-			// leftBlock = blocks.get(1);
-			// rightBlock = blocks.get(0);
-			// }
-			//return (30 / 158 * (blocks.get(0).getX() + blocks.get(1).getX()) / 2 - 158);
-			// Uses Pixy2 FOV of 30 deg and resolution of 316 to calculate approx Angle
-		//}
-		//return Double.MAX_VALUE;// return Max Value if there is not two blocks
+	// 	}
+	// 	if (blocks.size() >= 2) {// Intial version, stands to be improved
+	// 		Block leftBlock;
+	// 		Block rightBlock;
+	// 		if (blocks.get(0).getX() < blocks.get(1).getX()) {
+	// 		leftBlock = blocks.get(0);
+	// 		rightBlock = blocks.get(1);
+	// 		} else {
+	// 		leftBlock = blocks.get(1);
+	// 		rightBlock = blocks.get(0);
+	// 		}
+	// 		return (30 / 158 * (blocks.get(0).getX() + blocks.get(1).getX()) / 2 - 158);
+	// 		//Uses Pixy2 FOV of 30 deg and resolution of 316 to calculate approx Angle
+	// 	}
+	// 	return Double.MAX_VALUE;// return Max Value if there is not two blocks
 
-	//}
+	// }
 
-	//private static double toTerminalAngle(double angle) {// Converts to Terminal Angle
-	//	return (angle % 360 + 360) % 360;
-	//}
+	private static double toTerminalAngle(double angle) {// Converts to Terminal Angle
+		return (angle % 360 + 360) % 360;
+	}}
 	
 
 	//private static void rotateTo(double targetDeg) 
@@ -286,22 +416,11 @@ public class AutonomousCode {
 		rightmg.set(Math.min(1, (inches - approxDistance) / 12));
 
 	}
+}
+}
+*/
 
-	private static void HatchUp(Double d) {// retracts arm
-		Robot.hook.setHookMotor(.11 * 3);
-		if (RobotMap.upperSwitch.get() || OI.logitech.getBButton()) {// Stop Raising
-			Robot.hook.setHookMotor(0);
-			currentTaskDone = true;
-		}
-	}
 
-	private static void HatchDown(Double d) {// releases hatch
-		Robot.hook.setHookMotor(-.1392 * 2);
-		if (RobotMap.lowerSwitch.get() || OI.logitech.getBButton()) {// Stop Lowering
-			Robot.hook.setHookMotor(0);
-			currentTaskDone = true;
-		}
-	}
 
-	}*/
+
 
