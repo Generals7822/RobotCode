@@ -26,10 +26,15 @@ public class RobotMap {
   public static Victor leftMotor2 = new Victor(1);
   public static Victor rightMotor1 = new Victor(2);
   public static Victor rightMotor2 = new Victor(3);
-  public static Victor hookMotor = new Victor(4);
-  public static Victor cargoMotor = new Victor(5);
-  public static DigitalInput lowerSwitch = new DigitalInput(9);//limit switches
-  public static DigitalInput upperSwitch = new DigitalInput(8);
+  public static Victor shootMotor = new Victor(4);
+  public static Victor intakeMotor= new Victor(5);
+  public static Victor elevatorMotor = new Victor(6);
+  public static Victor spinnerMotor = new Victor(7);
+
+  //public static Victor hookMotor = new Victor(4);
+  //public static Victor cargoMotor = new Victor(5);
+  //public static DigitalInput lowerSwitch = new DigitalInput(9);//limit switches
+  //public static DigitalInput upperSwitch = new DigitalInput(8);
   public static George_Pixy pixy = new George_Pixy();//Pixy Cam
 
 

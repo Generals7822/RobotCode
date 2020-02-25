@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.drive.*;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
-import frc.robot.OI;
 //import java.util.ArrayList;
 //import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
@@ -32,6 +31,7 @@ public static Victor rmotor2 = RobotMap.rightMotor2;
 {
 
 }
+
 
 public void arcade(double left, double right)
 {
@@ -83,8 +83,8 @@ public void stop()
 
 public void itwasMicah(SpeedControllerGroup lmg, SpeedControllerGroup rmg)
 {
-  lmg.set(.5);
-  rmg.set(.5);
+  lmg.set(0);
+  rmg.set(0);
 }
 
   @Override
@@ -103,6 +103,11 @@ public void itwasMicah(SpeedControllerGroup lmg, SpeedControllerGroup rmg)
     lmg.set(0.5);
     rmg.set(0.5);
   }
+  public void noDrive(SpeedControllerGroup lmg, SpeedControllerGroup rmg)
+{
+  lmg.set(0);
+  rmg.set(0);
+}
   public void RichardDrives(SpeedControllerGroup lmg, SpeedControllerGroup rmg, double power, double direction)
   {//Main Drive command
     //Squared:

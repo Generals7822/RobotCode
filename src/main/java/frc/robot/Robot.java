@@ -7,32 +7,34 @@
 
 package frc.robot;//Info: auto format is Shift-Alt-F
 
-//import edu.wpi.first.cameraserver.*;
+import edu.wpi.first.cameraserver.*;
 //import com.analog.adis16448.frc.*;
 //import edu.wpi.first.wpilibj.*;
 import edu.wpi.cscore.*;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import frc.robot.commands.AutonomousCode;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frc.robot.commands.AutonomousCode_tinkering;
 import frc.robot.commands.AutonomousDrive;
 import frc.robot.commands.Drive_command;
+import frc.robot.commands.IntakeToShootCommand;
+import frc.robot.commands.PixyCommand;
+import frc.robot.subsystems.IntakeToShootSubsystem;
 //import frc.robot.commands.learning;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.PixySubsystem;
 import frc.robot.subsystems.AutonomousSubsystem;
-//import frc.robot.subsystems.ExampleSubsystem;
-//import frc.robot.subsystems.HookSubsystem;
-//import java.util.ArrayList;
+import frc.robot.subsystems.SpinnerSubsystem;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.SPI;
 
 /**
@@ -47,39 +49,43 @@ public class Robot extends TimedRobot {
   /**
    * Change the I2C port below to match the connection of your color sensor
    */
-  public final I2C.Port i2cPort= I2C.Port.kOnboard;
+  public static OI oi;
+  //public final I2C.Port i2cPort= I2C.Port.kOnboard;
   public static AutonomousSubsystem auto= new AutonomousSubsystem();
   public static DriveSubsystem driving = new DriveSubsystem();
+  public static IntakeToShootSubsystem intake = new IntakeToShootSubsystem();
+  public static SpinnerSubsystem spinner = new SpinnerSubsystem();
   public static PixySubsystem pixy= new PixySubsystem(); 
   //public static HookSubsystem hook = new HookSubsystem();
   public static OI m_oi;
   public static DriveSubsystem drive;
   //public static final ADIS16448_IMU imu = new ADIS16448_IMU();
- // static UsbCamera camera1, camera2;
+  public static UsbCamera camera1, camera2;
   public static VideoSink server;
-
-  Joystick joystick= new Joystick(0);
+  
+  //Joystick joystick= new Joystick(0);
   /**
    * A Rev Color Sensor V3 object is constructed with an I2C port as a 
    * parameter. The device will be automatically initialized with default 
    * parameters.
    */
   boolean LEDOn= true;
-  private final ColorSensorV3 m_colorSensor= new ColorSensorV3(i2cPort);
-  private final ColorMatch m_colorMatcher= new ColorMatch();
-  Command m_autonomousCommand;
+  // private final ColorSensorV3 m_colorSensor= new ColorSensorV3(i2cPort);
+  // private final ColorMatch m_colorMatcher= new ColorMatch();
+  // Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
  
-  public static Timer timer= new Timer();
-  private final Color kBlueTargetWithLED = ColorMatch.makeColor(0.173096, 0.446533, 0.380615);
-  private final Color kGreenTargetWithLED = ColorMatch.makeColor(0.214600,0.5195, 0.262);
-  private final Color kRedTargetWithLED = ColorMatch.makeColor(0.353516, 0.430176, 0.215820);
-  private final Color kYellowTargetWithLED = ColorMatch.makeColor(0.279297,.515137, 0.205566);
+  public static Timer autoTimer= new Timer();
+  public static Timer shootTimer= new Timer();
+  // private final Color kBlueTargetWithLED = ColorMatch.makeColor(0.173096, 0.446533, 0.380615);
+  // private final Color kGreenTargetWithLED = ColorMatch.makeColor(0.214600,0.5195, 0.262);
+  // private final Color kRedTargetWithLED = ColorMatch.makeColor(0.353516, 0.430176, 0.215820);
+  // private final Color kYellowTargetWithLED = ColorMatch.makeColor(0.279297,.515137, 0.205566);
   
-  private final Color kBlueTargetWithoutLED = ColorMatch.makeColor(0.185, 0.473, 0.309);
-  private final Color kGreenTargetWithoutLED = ColorMatch.makeColor(0.2277,0.579, 0.1950);
-  private final Color kRedTargetWithoutLED = ColorMatch.makeColor(0.613, 0.314, 0.071);
-  private final Color kYellowTargetWithoutLED = ColorMatch.makeColor(0.411,.504, 0.080);
+  // private final Color kBlueTargetWithoutLED = ColorMatch.makeColor(0.185, 0.473, 0.309);
+  // private final Color kGreenTargetWithoutLED = ColorMatch.makeColor(0.2277,0.579, 0.1950);
+  // private final Color kRedTargetWithoutLED = ColorMatch.makeColor(0.613, 0.314, 0.071);
+  // private final Color kYellowTargetWithoutLED = ColorMatch.makeColor(0.411,.504, 0.080);
   
   String colorLEDOff;
   String colorLEDOn;
@@ -89,12 +95,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    
+    //vision= new Vision();
     m_oi = new OI();
-    //CameraServer.getInstance().startAutomaticCapture(0);
-    //CameraServer.getInstance().startAutomaticCapture(1);
-    //camera1 = CameraServer.getInstance().startAutomaticCapture(0);
-    //camera2 = CameraServer.getInstance().startAutomaticCapture(1);
+    CameraServer.getInstance().startAutomaticCapture(0);
+    CameraServer.getInstance().startAutomaticCapture(1);
     //m_chooser.setDefaultOption("Default Auto", new Drive_command()); //sets drive as default
     //m_chooser.addOption(name, object);
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -102,18 +106,17 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto mode", m_chooser);
     //server = CameraServer.getInstance().getServer();
     //server.setSource(camera1);
-    // RobotMap.pixy = Pixy2.createInstance(new SPILink());
     // RobotMap.pixy.init();
     SmartDashboard.putString("DB/String 0", "String");
-    m_colorMatcher.addColorMatch(kBlueTargetWithoutLED);
-    m_colorMatcher.addColorMatch(kGreenTargetWithoutLED);
-    m_colorMatcher.addColorMatch(kRedTargetWithoutLED);
-    m_colorMatcher.addColorMatch(kYellowTargetWithoutLED);
+    // m_colorMatcher.addColorMatch(kBlueTargetWithoutLED);
+    // m_colorMatcher.addColorMatch(kGreenTargetWithoutLED);
+    // m_colorMatcher.addColorMatch(kRedTargetWithoutLED);
+    // m_colorMatcher.addColorMatch(kYellowTargetWithoutLED);
     
-    m_colorMatcher.addColorMatch(kBlueTargetWithLED);
-    m_colorMatcher.addColorMatch(kGreenTargetWithLED);
-    m_colorMatcher.addColorMatch(kRedTargetWithLED);
-    m_colorMatcher.addColorMatch(kYellowTargetWithLED);
+    // m_colorMatcher.addColorMatch(kBlueTargetWithLED);
+    // m_colorMatcher.addColorMatch(kGreenTargetWithLED);
+    // m_colorMatcher.addColorMatch(kRedTargetWithLED);
+    // m_colorMatcher.addColorMatch(kYellowTargetWithLED);
   }
 
   /**
@@ -139,40 +142,40 @@ public class Robot extends TimedRobot {
      * an object is the more light from the surroundings will bleed into the 
      * measurements and make it difficult to accurately determine its color.
      */
-    Color detectedColor= m_colorSensor.getColor();
-    double IR= m_colorSensor.getIR();
-    ColorMatchResult match= m_colorMatcher.matchClosestColor(detectedColor);
+    // Color detectedColor= m_colorSensor.getColor();
+    // double IR= m_colorSensor.getIR();
+    // ColorMatchResult match= m_colorMatcher.matchClosestColor(detectedColor);
     
-      if (match.color == kGreenTargetWithLED) {
-        colorLEDOn = "Green";
-      }
-       else if (match.color == kRedTargetWithLED) {
-        colorLEDOn = "Red";
-      } else if (match.color == kYellowTargetWithLED) {
-        colorLEDOn = "Yellow";
-      } 
-      else if (match.color == kBlueTargetWithLED) {
-        colorLEDOn = "Blue";
-      }
-      else {
-        colorLEDOn = "Unknown";
-      }
+    //   if (match.color == kGreenTargetWithLED) {
+    //     colorLEDOn = "Green";
+    //   }
+    //    else if (match.color == kRedTargetWithLED) {
+    //     colorLEDOn = "Red";
+    //   } else if (match.color == kYellowTargetWithLED) {
+    //     colorLEDOn = "Yellow";
+    //   } 
+    //   else if (match.color == kBlueTargetWithLED) {
+    //     colorLEDOn = "Blue";
+    //   }
+    //   else {
+    //     colorLEDOn = "Unknown";
+    //   }
     
     
-    if (match.color == kGreenTargetWithoutLED) {
-      colorLEDOff = "Green";
-    }
-     else if (match.color == kRedTargetWithoutLED) {
-      colorLEDOff = "Red";
-    } else if (match.color == kYellowTargetWithoutLED) {
-      colorLEDOff = "Yellow";
-    } 
-    else if (match.color == kBlueTargetWithoutLED) {
-      colorLEDOff = "Blue";
-    }
-    else {
-      colorLEDOff = "Unknown";
-    }
+    // if (match.color == kGreenTargetWithoutLED) {
+    //   colorLEDOff = "Green";
+    // }
+    //  else if (match.color == kRedTargetWithoutLED) {
+    //   colorLEDOff = "Red";
+    // } else if (match.color == kYellowTargetWithoutLED) {
+    //   colorLEDOff = "Yellow";
+    // } 
+    // else if (match.color == kBlueTargetWithoutLED) {
+    //   colorLEDOff = "Blue";
+    // }
+    // else {
+    //   colorLEDOff = "Unknown";
+    // }
   
      /**
      * The sensor returns a raw IR value of the infrared light detected.
@@ -183,17 +186,18 @@ public class Robot extends TimedRobot {
      * Open Smart Dashboard or Shuffleboard to see the color detected by the 
      * sensor.
      */
-    SmartDashboard.putNumber("Timer", timer.get());
-    SmartDashboard.putNumber("Red", detectedColor.red);
-    SmartDashboard.putNumber("Green", detectedColor.green);
-    SmartDashboard.putNumber("Blue", detectedColor.blue);
-    SmartDashboard.putNumber("IR", IR);
-    SmartDashboard.putNumber("Red", detectedColor.red);
-    SmartDashboard.putNumber("Green", detectedColor.green);
-    SmartDashboard.putNumber("Blue", detectedColor.blue);
-    SmartDashboard.putNumber("Confidence", match.confidence);
-    SmartDashboard.putString("Detected Color (LEDOn):", colorLEDOn);
-    SmartDashboard.putString("Detected Color (LEDOff):", colorLEDOff);
+    // SmartDashboard.putNumber("Timer", autoTimer.get());
+    // SmartDashboard.putNumber("Shoot Timer", shootTimer.get());
+    // SmartDashboard.putNumber("Red", detectedColor.red);
+    // SmartDashboard.putNumber("Green", detectedColor.green);
+    // SmartDashboard.putNumber("Blue", detectedColor.blue);
+    // SmartDashboard.putNumber("IR", IR);
+    // SmartDashboard.putNumber("Red", detectedColor.red);
+    // SmartDashboard.putNumber("Green", detectedColor.green);
+    // SmartDashboard.putNumber("Blue", detectedColor.blue);
+    // SmartDashboard.putNumber("Confidence", match.confidence);
+    // SmartDashboard.putString("Detected Color (LEDOn):", colorLEDOn);
+    // SmartDashboard.putString("Detected Color (LEDOff):", colorLEDOff);
     
 
         /**
@@ -208,9 +212,9 @@ public class Robot extends TimedRobot {
      * accurate color values.
      */
 
-    int proximity = m_colorSensor.getProximity();
+    //int proximity = m_colorSensor.getProximity();
 
-    SmartDashboard.putNumber("Proximity", proximity);
+    //SmartDashboard.putNumber("Proximity", proximity);
 
   }
 
@@ -243,7 +247,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    timer.start();
+    autoTimer.start();
     Robot.auto.setDefaultCommand(new AutonomousDrive());
     //Robot.hook.setDefaultCommand(new HookControl());
     
@@ -270,14 +274,17 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    timer.stop();
+    autoTimer.stop();
+    //shootTimer.start();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-
-    Robot.driving.setDefaultCommand(new Drive_command());
-    //Robot.hook.setDefaultCommand(new HookControl());
+    
+    //Robot.driving.setDefaultCommand(new Drive_command());
+    //Robot.shoot.setDefaultCommand(new ShootCommand());
+    Robot.intake.setDefaultCommand(new IntakeToShootCommand());
+    Robot.pixy.setDefaultCommand(new PixyCommand());
   }
 
   /**
@@ -285,13 +292,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    //learning.On();
     //AutonomousCode.autoMode = true;
     Scheduler.getInstance().run();
+    
     //AutonomousCode.testAutonomous();
     //AutonomousCode.autonomous();
-    //AutonomousCode_tinkering.testpixy();
-    Robot.driving.setDefaultCommand(new Drive_command());
+    AutonomousCode_tinkering.testpixy();
+    //Robot.driving.setDefaultCommand(new Drive_command());
+    //vision.testPixy1();
+    
   }
 
   /**
@@ -299,5 +308,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    LiveWindow.setEnabled(true);
   }
 }

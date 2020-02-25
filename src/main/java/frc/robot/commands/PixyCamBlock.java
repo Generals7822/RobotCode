@@ -7,23 +7,21 @@
 
 package frc.robot.commands;
 
-/**
- * Add your docs here.
- */
-public class PixyCamBlock {
-    public int sigNumber, xCenter, yCenter, width, height, angle, trackingIndex, age ;
+import edu.wpi.first.wpilibj.command.Command;
 
-    public PixyCamBlock(int sigNumber, int xCenter, int yCenter, int width, int height, int angle, int trackingIndex, int age)
-    {
-        this.sigNumber = sigNumber;
-        this.xCenter = xCenter;
-        this.yCenter = yCenter;
-        this.width = width;
-        this.height = height;
-        this.angle = angle;
-        this.trackingIndex = trackingIndex;
-        this.age = age;
-    }
+public class PixyCamBlock 
+{
+  public int sigNumber, xCenter, yCenter, width, height, angle, trackingIndex, age;
 
-
+  public PixyCamBlock(int sigNumber, int xCenter, int yCenter, int width, int height, int angle, int trackingIndex, int age)
+  {
+    this.sigNumber=sigNumber;
+    this.xCenter=xCenter;
+    this.yCenter=yCenter;
+    this.width=width;
+    this.height=height;
+    this.angle=angle;
+    this.trackingIndex=trackingIndex;
+    this.age=age;
+  }
 }

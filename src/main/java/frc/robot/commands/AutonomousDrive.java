@@ -61,7 +61,7 @@ public class AutonomousDrive extends Command {//Main Driving Command
       {
         pixyMode=true;
       }
-      Robot.auto.TimedDistance(leftmg, rightmg, Robot.timer);
+      Robot.auto.TimedDistance(leftmg, rightmg, Robot.autoTimer);
      // Robot.auto.TimedDistance(leftmg, rightmg);
     //}
     // else if(RightStart)

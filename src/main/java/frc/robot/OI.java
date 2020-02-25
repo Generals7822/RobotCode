@@ -23,6 +23,7 @@ public class OI {
   // public static Joystick rightJoy = new Joystick(1);
   public static XboxController logitech = new XboxController(0);//Logitech Controller on port 0
   public static Joystick joystick = new Joystick(1);
+  
   // Button button5l = new JoystickButton(leftJoy, 5);
   // Button button1l = new JoystickButton(leftJoy, 1);
   // Button button1r = new JoystickButton(rightJoy, 1);

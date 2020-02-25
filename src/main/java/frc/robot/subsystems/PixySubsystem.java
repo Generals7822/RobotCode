@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.*;
 import frc.robot.RobotMap;
 import frc.robot.commands.*;
+import java.util.logging.Logger;
 //import io.github.pseudoresonance.pixy2api.*;
 
 /**
@@ -30,7 +31,7 @@ private static byte[] sendAndRecieve(int type, byte[]outbytes, int MaxExpectedRe
     // Find length of desired output data packet
     // If no packet supplied, then use zero 
 
-    int length ;
+    int length;
 
     if (outbytes == null){
         length = 0;
@@ -131,5 +132,7 @@ private static byte[] sendAndRecieve(int type, byte[]outbytes, int MaxExpectedRe
   private static double toTerminalAngle(double angle) {// Converts to Terminal Angle
 		return (angle % 360 + 360) % 360;
 	}
+
+	
 	
 }
