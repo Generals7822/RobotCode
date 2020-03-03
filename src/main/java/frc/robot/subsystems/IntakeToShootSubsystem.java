@@ -9,67 +9,59 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Victor;
 import frc.robot.OI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import frc.robot.subsystems.HookSubsystem;
 
-/**
- * Add your docs here.
- */
 public class IntakeToShootSubsystem extends Subsystem {
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
 
 public static Victor intake1 = RobotMap.intakeMotor;
 public static Victor elevator1= RobotMap.elevatorMotor;
 public static Victor shooter1= RobotMap.shootMotor;
-Timer elevatorTimer= new Timer();
+
+public static Timer elevatorTimer= new Timer();
+
 
   @Override
   public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
+
   }
 
-  public void intakeToShoot(Victor v)
+  public void intakeToShoot()
   {
-    intake1=v;
-    if(OI.logitech.getYButtonPressed())
-    {
-      intake1.setSpeed(-0.5);
-      elevator1.setSpeed(0);
-      shooter1.setSpeed(0);
-    }
     if(OI.logitech.getXButton())
-      {
-        elevatorTimer.start();
-        intake1.setSpeed(0);
-        elevator1.setSpeed(-0.5);
-        shooter1.setSpeed(0);
-        if(elevatorTimer.get()>2)
-        {
-          elevator1.setSpeed(0);
-          elevatorTimer.reset();
-        }
-      }
-      
-    if(OI.logitech.getAButton())
     {
+        intake1.setSpeed(-0.6);
+        elevator1.setSpeed(0);
+        shooter1.setSpeed(0);
+    }
+    
+    if(OI.logitech.getYButton())
+      {
+        intake1.setSpeed(0);
+        elevator1.setSpeed(-0.6);
+      }
+
+    if(OI.logitech.getAButton())
+    {      
       intake1.setSpeed(0);
       elevator1.setSpeed(0);
-      shooter1.setSpeed(-0.5);
+      shooter1.setSpeed(-0.75);
     }
     if(OI.logitech.getBButton())
     {
       intake1.setSpeed(0);
       elevator1.setSpeed(0);
       shooter1.setSpeed(0);
-    }   
+      HookSubsystem.hookUpMotor.set(0);
+      HookSubsystem.robotUpMotor.set(0);
+    }
+    if(OI.logitech.getBumper(Hand.kLeft))
+    {
+      elevator1.setSpeed(0.6);
+    }
       
-  }
-  public void elevator(Victor v)
-  {
-    elevator1=v;
-    elevator1.setSpeed(0.25);
   }
 }

@@ -7,35 +7,28 @@
 
 package frc.robot;//Info: auto format is Shift-Alt-F
 
-import edu.wpi.first.cameraserver.*;
-//import com.analog.adis16448.frc.*;
-//import edu.wpi.first.wpilibj.*;
-import edu.wpi.cscore.*;
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import frc.robot.commands.AutonomousCode_tinkering;
-import frc.robot.commands.AutonomousDrive;
-import frc.robot.commands.Drive_command;
-import frc.robot.commands.IntakeToShootCommand;
-import frc.robot.commands.PixyCommand;
-import frc.robot.subsystems.IntakeToShootSubsystem;
-//import frc.robot.commands.learning;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.PixySubsystem;
-import frc.robot.subsystems.AutonomousSubsystem;
-import frc.robot.subsystems.SpinnerSubsystem;
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorMatch;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.SPI;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.util.Color;
+//import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import frc.robot.commands.Drive_command;
+import frc.robot.commands.HookCommand;
+import frc.robot.subsystems.HookSubsystem;
+import frc.robot.commands.IntakeToShootCommand;
+import frc.robot.commands.PixyAlignCommand;
+import frc.robot.subsystems.IntakeToShootSubsystem;
+import frc.robot.subsystems.PixyAlignSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
+//import frc.robot.subsystems.AutonomousSubsystem;
+// import com.revrobotics.ColorSensorV3;
+// import com.revrobotics.ColorMatchResult;
+// import com.revrobotics.ColorMatch;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -45,38 +38,29 @@ import edu.wpi.first.wpilibj.SPI;
  * project.
  */
 public class Robot extends TimedRobot {
-  //public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   /**
    * Change the I2C port below to match the connection of your color sensor
    */
-  public static OI oi;
+
   //public final I2C.Port i2cPort= I2C.Port.kOnboard;
-  public static AutonomousSubsystem auto= new AutonomousSubsystem();
+  public static PixyAlignSubsystem align = new PixyAlignSubsystem();
   public static DriveSubsystem driving = new DriveSubsystem();
   public static IntakeToShootSubsystem intake = new IntakeToShootSubsystem();
-  public static SpinnerSubsystem spinner = new SpinnerSubsystem();
-  public static PixySubsystem pixy= new PixySubsystem(); 
-  //public static HookSubsystem hook = new HookSubsystem();
-  public static OI m_oi;
-  public static DriveSubsystem drive;
-  //public static final ADIS16448_IMU imu = new ADIS16448_IMU();
-  public static UsbCamera camera1, camera2;
-  public static VideoSink server;
-  
-  //Joystick joystick= new Joystick(0);
+  public static HookSubsystem hook= new HookSubsystem(); 
+  public static UsbCamera camera1;
+  public static DigitalInput elevatorLimit= new DigitalInput(1);
+  public static DigitalInput hookLimit= new DigitalInput(2);
+  static long autoDriveTime; 
+
   /**
    * A Rev Color Sensor V3 object is constructed with an I2C port as a 
    * parameter. The device will be automatically initialized with default 
    * parameters.
    */
-  boolean LEDOn= true;
+  //boolean LEDOn= true;
   // private final ColorSensorV3 m_colorSensor= new ColorSensorV3(i2cPort);
   // private final ColorMatch m_colorMatcher= new ColorMatch();
-  // Command m_autonomousCommand;
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
- 
-  public static Timer autoTimer= new Timer();
-  public static Timer shootTimer= new Timer();
+
   // private final Color kBlueTargetWithLED = ColorMatch.makeColor(0.173096, 0.446533, 0.380615);
   // private final Color kGreenTargetWithLED = ColorMatch.makeColor(0.214600,0.5195, 0.262);
   // private final Color kRedTargetWithLED = ColorMatch.makeColor(0.353516, 0.430176, 0.215820);
@@ -87,8 +71,8 @@ public class Robot extends TimedRobot {
   // private final Color kRedTargetWithoutLED = ColorMatch.makeColor(0.613, 0.314, 0.071);
   // private final Color kYellowTargetWithoutLED = ColorMatch.makeColor(0.411,.504, 0.080);
   
-  String colorLEDOff;
-  String colorLEDOn;
+  // String colorLEDOff;
+  // String colorLEDOn;
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code
@@ -96,18 +80,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     //vision= new Vision();
-    m_oi = new OI();
     CameraServer.getInstance().startAutomaticCapture(0);
-    CameraServer.getInstance().startAutomaticCapture(1);
-    //m_chooser.setDefaultOption("Default Auto", new Drive_command()); //sets drive as default
-    //m_chooser.addOption(name, object);
-    // chooser.addOption("My Auto", new MyAutoCommand());
-    //SmartDashboard.putTimer("Timer: ", timer);
-    SmartDashboard.putData("Auto mode", m_chooser);
-    //server = CameraServer.getInstance().getServer();
-    //server.setSource(camera1);
+    
+    //CameraServer.getInstance().startAutomaticCapture(1);
     // RobotMap.pixy.init();
-    SmartDashboard.putString("DB/String 0", "String");
+    //SmartDashboard.putString("DB/String 0", "String");
+    
     // m_colorMatcher.addColorMatch(kBlueTargetWithoutLED);
     // m_colorMatcher.addColorMatch(kGreenTargetWithoutLED);
     // m_colorMatcher.addColorMatch(kRedTargetWithoutLED);
@@ -161,7 +139,6 @@ public class Robot extends TimedRobot {
     //     colorLEDOn = "Unknown";
     //   }
     
-    
     // if (match.color == kGreenTargetWithoutLED) {
     //   colorLEDOff = "Green";
     // }
@@ -180,14 +157,6 @@ public class Robot extends TimedRobot {
      /**
      * The sensor returns a raw IR value of the infrared light detected.
      */
-    
-
-    /**
-     * Open Smart Dashboard or Shuffleboard to see the color detected by the 
-     * sensor.
-     */
-    // SmartDashboard.putNumber("Timer", autoTimer.get());
-    // SmartDashboard.putNumber("Shoot Timer", shootTimer.get());
     // SmartDashboard.putNumber("Red", detectedColor.red);
     // SmartDashboard.putNumber("Green", detectedColor.green);
     // SmartDashboard.putNumber("Blue", detectedColor.blue);
@@ -225,6 +194,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+
   }
 
   @Override
@@ -246,61 +216,55 @@ public class Robot extends TimedRobot {
    * the switch structure below with additional strings & commands.
    */
   @Override
-  public void autonomousInit() {
-    autoTimer.start();
-    Robot.auto.setDefaultCommand(new AutonomousDrive());
-    //Robot.hook.setDefaultCommand(new HookControl());
-    
-    
-    //  String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
-    //  switch(autoSelected) { case "My Auto": AutonomousCode_tinkering = new
-    //  MyAutoCommand(); break; case "Default Auto": default: autonomousCommand = new
-    //  ExampleCommand(); break; }
-     
-
-    // schedule the autonomous command (example)
+  public void autonomousInit() 
+  {
+    Robot.align.setDefaultCommand(new PixyAlignCommand());
+    autoDriveTime = System.currentTimeMillis();
   }
 
-  /**
+  /**+
+   * 
    * This function is called periodically during autonomous.
    */
   @Override
-  public void autonomousPeriodic() {
+  public void autonomousPeriodic() 
+  {
     Scheduler.getInstance().run();
-    
-    //AutonomousCode.autonomous();
-    //AutonomousCode_tinkering.Drive10feet();
+    if(Math.subtractExact(System.currentTimeMillis(), autoDriveTime)>3000)
+    {
+      RobotMap.elevatorMotor.setSpeed(-0.6);
+    }
+    if(Math.subtractExact(System.currentTimeMillis(), autoDriveTime)>13500)
+    {
+      RobotMap.elevatorMotor.setSpeed(0);
+      RobotMap.shootMotor.setSpeed(0);
+      RobotMap.leftMotor1.setSpeed(0.25);
+      RobotMap.leftMotor2.setSpeed(0.25);
+      RobotMap.rightMotor1.setSpeed(-0.25);
+      RobotMap.rightMotor2.setSpeed(-0.25);
+    }
   }
 
   @Override
   public void teleopInit() {
-    autoTimer.stop();
-    //shootTimer.start();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
     
-    //Robot.driving.setDefaultCommand(new Drive_command());
-    //Robot.shoot.setDefaultCommand(new ShootCommand());
+    Robot.driving.setDefaultCommand(new Drive_command());
     Robot.intake.setDefaultCommand(new IntakeToShootCommand());
-    Robot.pixy.setDefaultCommand(new PixyCommand());
+    Robot.hook.setDefaultCommand(new HookCommand());
+    //Robot.align.setDefaultCommand(new PixyAlignCommand());
   }
 
   /**
    * This function is called periodically during operator control.
    */
   @Override
-  public void teleopPeriodic() {
-    //AutonomousCode.autoMode = true;
+  public void teleopPeriodic() 
+  {
     Scheduler.getInstance().run();
-    
-    //AutonomousCode.testAutonomous();
-    //AutonomousCode.autonomous();
-    AutonomousCode_tinkering.testpixy();
-    //Robot.driving.setDefaultCommand(new Drive_command());
-    //vision.testPixy1();
-    
   }
 
   /**

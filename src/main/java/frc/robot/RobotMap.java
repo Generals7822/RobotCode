@@ -7,9 +7,7 @@
 
 package frc.robot;
 import edu.wpi.first.wpilibj.*;
-import frc.robot.commands.*;
-//import io.github.pseudoresonance.pixy2api.Pixy2;
-//import java.util.ArrayList;
+import frc.robot.subsystems.*;
 
 
 /**
@@ -21,26 +19,20 @@ import frc.robot.commands.*;
 public class RobotMap {
   // For example to map the left and right motors, you could define the
   // following variables to use with your drivetrain subsystem.
-  //public static int leftMotor = 1;
+
+//this is where the motor objects are assigned to motor controller ports on the PWM
+
   public static Victor leftMotor1 = new Victor(0);//Motors on their respectives ports
-  public static Victor leftMotor2 = new Victor(1);
-  public static Victor rightMotor1 = new Victor(2);
+  public static Victor leftMotor2 = new Victor(2);
+  public static Victor rightMotor1 = new Victor(1);
   public static Victor rightMotor2 = new Victor(3);
-  public static Victor shootMotor = new Victor(4);
-  public static Victor intakeMotor= new Victor(5);
-  public static Victor elevatorMotor = new Victor(6);
-  public static Victor spinnerMotor = new Victor(7);
-
-  //public static Victor hookMotor = new Victor(4);
-  //public static Victor cargoMotor = new Victor(5);
-  //public static DigitalInput lowerSwitch = new DigitalInput(9);//limit switches
-  //public static DigitalInput upperSwitch = new DigitalInput(8);
+  public static Victor shootMotor = new Victor(7);
+  public static Victor intakeMotor= new Victor(8);
+  public static Victor elevatorMotor = new Victor(9);
+  public static Victor hookUpMotor = new Victor(6);
+  public static Victor robotUpMotor = new Victor(4);
+  
   public static George_Pixy pixy = new George_Pixy();//Pixy Cam
-
-
-  // If you are using multiple modules, make sure to define both the port
-  // number and the module. For example you with a rangefinder:
-  // public static int rangefinderPort = 1;
-  // public static int rangefinderModule = 1;
+  
 }
 

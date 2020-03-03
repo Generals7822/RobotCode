@@ -8,9 +8,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
+//import frc.robot.OI;
 import frc.robot.Robot;
-import frc.robot.RobotMap;
+//import frc.robot.RobotMap;
+//import edu.wpi.first.wpilibj.*;
 
 public class IntakeToShootCommand extends Command {
   public IntakeToShootCommand() {
@@ -23,18 +24,14 @@ public class IntakeToShootCommand extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    System.out.println("initialize");
+    //System.out.println("initialize");
   }
-
-  public static boolean intakeMode = false;
-  public static boolean elevatorMode = false;
-  public static boolean ABtn = OI.logitech.getAButton(); 
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
     
-      Robot.intake.intakeToShoot(RobotMap.intakeMotor);
+      Robot.intake.intakeToShoot();
     
     //Robot.intake.elevator(RobotMap.elevatorMotor);
   }

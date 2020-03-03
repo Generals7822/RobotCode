@@ -8,13 +8,10 @@ package frc.robot.subsystems;
 
 //import javax.lang.model.util.ElementScanner6;
 
-import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.drive.*;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
-//import java.util.ArrayList;
-//import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
 /**
  * Add your docs here.
@@ -26,19 +23,12 @@ public static Victor lmotor1= RobotMap.leftMotor1; //reset
 public static Victor lmotor2= RobotMap.leftMotor2;
 public static Victor rmotor1 = RobotMap.rightMotor1;
 public static Victor rmotor2 = RobotMap.rightMotor2;
+public static SpeedControllerGroup leftmg = new SpeedControllerGroup(lmotor1, lmotor2);
+public static SpeedControllerGroup rightmg = new SpeedControllerGroup(rmotor1, rmotor2);
 
   public DriveSubsystem()
 {
 
-}
-
-
-public void arcade(double left, double right)
-{
-  SpeedControllerGroup leftmg = new SpeedControllerGroup(lmotor1, lmotor2);
-  SpeedControllerGroup rightmg = new SpeedControllerGroup(rmotor1, rmotor2);
-  DifferentialDrive myDrive = new DifferentialDrive(leftmg, rightmg);
-  myDrive.arcadeDrive(left, right);
 }
 
 public void squareSpeed(double left, double right)
@@ -57,22 +47,6 @@ public void speed(double left, double right)
   rmotor1.set(right);
 }
 
-public void squareSpeed(double speed)
-{
-  lmotor2.set(-speed*Math.abs(speed));
-  lmotor1.set(-speed*Math.abs(speed));
-  rmotor2.set(speed*Math.abs(speed));
-  rmotor1.set(speed*Math.abs(speed));
-}
-
-public void speed(double speed)
-{
-  lmotor2.set(-speed);
-  lmotor1.set(-speed);
-  rmotor2.set(speed);
-  rmotor1.set(speed);
-}
-
 public void stop()
 {
   lmotor2.set(0);
@@ -81,42 +55,28 @@ public void stop()
   rmotor1.set(0);
 }
 
-public void itwasMicah(SpeedControllerGroup lmg, SpeedControllerGroup rmg)
-{
-  lmg.set(0);
-  rmg.set(0);
-}
-
   @Override
   public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-    //This is a comment
+    
   }
-  public void LeftMotorStrength(SpeedController lmg, SpeedController rmg)
-  {
-    rmg.set(0);
-    lmg.set(0.8);
-  }
+
   public void StandardDrive(SpeedControllerGroup lmg, SpeedControllerGroup rmg)
   {
     lmg.set(0.5);
     rmg.set(0.5);
   }
-  public void noDrive(SpeedControllerGroup lmg, SpeedControllerGroup rmg)
-{
-  lmg.set(0);
-  rmg.set(0);
-}
+
   public void RichardDrives(SpeedControllerGroup lmg, SpeedControllerGroup rmg, double power, double direction)
   {//Main Drive command
     //Squared:
     //lmg.set(Math.max(-power+direction,-1)*Math.abs(Math.max(-power+direction,-1))); 
     //rmg.set(Math.min(-direction-power,1)*Math.abs(Math.min(-direction-power,1)));
     //non-Squared:
-    lmg.set(Math.max(-power+direction,-1));
-    rmg.set(Math.min(-direction-power,1));//Sets the controls with arcade mode calculation
-
+    // lmg.set(0.25*OI.logitech.getRawAxis(1));
+    // rmg.set(-0.25*OI.logitech.getRawAxis(1));//Sets the controls with arcade mode calculation
+    
+    lmg.set(Math.max(-power+direction, -1));
+    rmg.set(Math.min(-direction-power,1));
     
 
     //Test Pixy Code
